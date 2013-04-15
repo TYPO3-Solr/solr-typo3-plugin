@@ -20,18 +20,11 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.lucene.index.AtomicReader;
-import org.apache.lucene.index.AtomicReaderContext;
-import org.apache.lucene.index.DocsEnum;
-import org.apache.lucene.index.Terms;
-import org.apache.lucene.index.TermsEnum;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.search.FieldCache;
-import org.apache.lucene.search.FieldCache.DocTerms;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.util.Bits;
-import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.OpenBitSet;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
@@ -107,38 +100,32 @@ public class AccessFilter extends Filter {
   /**
    * Filters the documents based on the access granted.
    *
-   * @param context AtomicReaderContext
-   * @param acceptDocs Bits
+   * @param reader The index reader
    * @return OpenBitSet
    * @throws IOException When an error occurs while reading from the index.
    */
   @Override
-  public DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException {
-	  AtomicReader reader = context.reader();
-	  DocTerms docTermValues = FieldCache.DEFAULT.getTerms(reader, accessField);
-	  OpenBitSet bits = new OpenBitSet(reader.maxDoc());
+  public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
+    String[] access = FieldCache.DEFAULT.getStrings(reader, accessField);
+    OpenBitSet bits = new OpenBitSet(reader.maxDoc());
 
-	  Terms terms = reader.fields().terms(accessField);
-	  TermsEnum termsEnum = terms.iterator(null);
+    TermDocs td = reader.termDocs(null);
 
-	  if (termsEnum.next() != null) {
-		  DocsEnum docsEnum = null;
-		  BytesRef term;
-		  String accessValue;
-	      do {
-	        docsEnum = termsEnum.docs(acceptDocs, docsEnum, 0);
-	        int docId;
-	        while ((docId = docsEnum.nextDoc()) != DocIdSetIterator.NO_MORE_DOCS) {
-	        	term = new BytesRef();
-			  	accessValue = docTermValues.getTerm(docId, term).utf8ToString();
-			  	if (accessGranted(accessValue)) {
-		          bits.set(docId);
-		        }
-	        }
-	      } while (termsEnum.next() != null);
-	  }
+    try {
 
-	  return bits;
+      while (td.next()) {
+        int docId = td.doc();
+
+        if (accessGranted(access[docId])) {
+          bits.set(docId);
+        }
+      }
+
+    } finally {
+      td.close();
+    }
+
+    return bits;
   }
 
   /**

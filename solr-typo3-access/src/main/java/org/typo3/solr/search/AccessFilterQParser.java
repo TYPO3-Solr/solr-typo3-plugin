@@ -16,7 +16,7 @@
 
 package org.typo3.solr.search;
 
-import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.ConstantScoreQuery;
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.SolrParams;

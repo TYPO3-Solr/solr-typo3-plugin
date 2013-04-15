@@ -217,6 +217,11 @@ public class ConfigurationHandler extends RequestHandlerBase implements SolrCore
   }
 
   @Override
+  public String getSourceId() {
+    return "$Id: ConfigurationUpdateHandler.java 75166 2011-03-07 14:58:33Z dkd-renner $";
+  }
+  
+  @Override
   public String getSource() {
     return null;
   }

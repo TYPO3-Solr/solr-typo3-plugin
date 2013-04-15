@@ -50,7 +50,6 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    * @param args Arguments
    * @see org.apache.solr.util.plugin.NamedListInitializedPlugin#init(org.apache.solr.common.util.NamedList)
    */
-  @SuppressWarnings("rawtypes")
   public void init(NamedList args) {
   }
 
@@ -94,12 +93,10 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
     return SolrInfoMBean.Category.OTHER;
   }
 
-  /* in 4.0 version getSourceId is removed
   @Override
   public String getSourceId() {
     return "$Id: AccessFilterQParserPlugin.java 88365 2011-11-30 00:11:10Z dkd-renner $";
   }
-  */
 
   @Override
   public String getSource() {
@@ -111,7 +108,6 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
     return null;
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public NamedList getStatistics() {
     return new SimpleOrderedMap();

@@ -3,22 +3,24 @@ package org.typo3.solr.handler;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.solr.common.SolrException;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.core.SolrCore;
 import org.apache.solr.core.SolrResourceLoader;
-import org.apache.solr.handler.UpdateRequestHandler;
+import org.apache.solr.handler.XmlUpdateRequestHandler;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.response.SolrQueryResponse;
+import org.apache.solr.search.SolrIndexReader;
 
 import org.apache.solr.search.SolrIndexSearcher;
 import org.typo3.solr.cache.KittyCache;
@@ -29,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.typo3.solr.common.PropertiesLoader;
 
 
-public class ControlUpdateHandler extends UpdateRequestHandler{
+public class ControlUpdateHandler extends XmlUpdateRequestHandler{
 	public static Logger log = LoggerFactory.getLogger(ControlUpdateHandler.class);
 
 	private final String DOCUMENT_LIMIT_KEY = "document_limit";
@@ -91,9 +93,6 @@ public class ControlUpdateHandler extends UpdateRequestHandler{
 		int document_limit = Integer.parseInt(cache.get(DOCUMENT_LIMIT_KEY).toString());
 		int numDocs = Integer.parseInt(cache.get(NUM_DOCS_KEY).toString());
 
-		System.out.println("######### document_limit: " + document_limit);
-		System.out.println("######### num_docs_cache: " + numDocs);
-
 		if(numDocs <= document_limit) {
 			super.handleRequestBody(req, rsp);
 		}
@@ -127,45 +126,72 @@ public class ControlUpdateHandler extends UpdateRequestHandler{
 		return internal_name;
 	}
 
-	private int getDocumentLimit(String internal_name) throws Exception {
+	private int getDocumentLimit(String internal_name) {
 		int document_limit = 0;
-		if(!StringUtils.isEmpty(internal_name)) {
-			String query = "SELECT p.hard_document_limit FROM pricings p, solr_cores s " +
-					"WHERE s.`internal_name` = '" + internal_name + "' " +
-					"AND s.`pricing_id` = p.`id`";
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet result = null;
+		try {
+			if(!StringUtils.isEmpty(internal_name)) {
+				Context envContext = new InitialContext();
 
-			Context envContext = new InitialContext();
-			DataSource datasource = (DataSource)envContext.lookup("java:/comp/env/jdbc/hostedSolr");
-			Connection connection = datasource.getConnection();
-			Statement statement = connection.createStatement();
-			ResultSet result = statement.executeQuery(query);
-
-			if(result != null) {
-				ResultSetMetaData resultMeta = result.getMetaData();
-			    int numberOfColumns = resultMeta.getColumnCount();
-			    if(numberOfColumns == 1) {
-			    	result.next();
-			    	document_limit = result.getInt("hard_document_limit");
-			    }
+				if(envContext != null) {
+					DataSource datasource = (DataSource)envContext.lookup("java:/comp/env/jdbc/hostedSolr");
+					if(datasource != null) {
+						connection = datasource.getConnection();
+						if(connection != null) {
+							statement = connection.createStatement();
+							if(statement != null) {
+								String query = "SELECT p.hard_document_limit FROM pricings p, solr_cores s " +
+										"WHERE s.`internal_name` = '" + internal_name + "' " +
+										"AND s.`pricing_id` = p.`id`";
+								result = statement.executeQuery(query);
+								if(result != null) {
+									ResultSetMetaData resultMeta = result.getMetaData();
+								    int numberOfColumns = resultMeta.getColumnCount();
+								    if(numberOfColumns == 1) {
+								    	result.next();
+								    	document_limit = result.getInt("hard_document_limit");
+								    }
+								}
+								result.close();
+							}
+							statement.close();
+							connection.close();
+						}
+					}
+				}
 			}
-
-			result.close();
-			statement.close();
-			connection.close();
+		}
+		catch(SQLException sqle) {
+			System.out.println("SQLException internal-name: " + internal_name + " " + sqle);
+		}
+		catch(NamingException ne) {
+			System.out.println("NamingException internal-name: " + internal_name + " " + ne);
+		}
+		finally {
+		    if (result != null) {
+		      try { result.close(); } catch (SQLException e) { ; }
+		      result = null;
+		    }
+		    if (statement != null) {
+		      try { statement.close(); } catch (SQLException e) { ; }
+		      statement = null;
+		    }
+		    if (connection != null) {
+		      try { connection.close(); } catch (SQLException e) { ; }
+		      connection = null;
+		    }
 		}
 		return document_limit;
 	}
 
 	private int getNumDocs(SolrIndexSearcher searcher) {
 		int numDocs = 0;
-		//SolrIndexReader reader = searcher.getReader();
-
-		DirectoryReader reader = searcher.getIndexReader();
-
+		SolrIndexReader reader = searcher.getReader();
 		if(reader != null) {
 			numDocs = reader.numDocs();
 		}
-		System.out.println("######### numDocs: " + numDocs);
 		return numDocs;
 	}
 

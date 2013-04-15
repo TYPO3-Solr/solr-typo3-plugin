@@ -19,14 +19,10 @@ package org.typo3.solr.search;
 import junit.framework.TestCase;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.miscellaneous.LimitTokenCountAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -48,9 +44,10 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	private Query allDocs;
 	private FilteredQuery allRecordDocs;
 
+
 	protected void setUp() throws Exception {
 		dir = new RAMDirectory();
-		analyzer = new StandardAnalyzer(Version.LUCENE_40);
+		analyzer = new StandardAnalyzer(Version.LUCENE_32);
 
 		Document[] docs = {
 			getDocument("public1", "0"),
@@ -65,37 +62,36 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 			getDocument("protectedRecord5__r1||2||3", "r:1,2,3")
 		};
 
-
-		IndexWriterConfig writerConfig = new IndexWriterConfig(Version.LUCENE_40,
-												new LimitTokenCountAnalyzer(
-														analyzer, Integer.MAX_VALUE));
-		writerConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-		IndexWriter writer = new IndexWriter(dir, writerConfig);
+		IndexWriter writer = new IndexWriter(
+			dir,
+			analyzer,
+			true,
+			IndexWriter.MaxFieldLength.UNLIMITED
+		);
 
 		for (Document doc : docs) {
 			writer.addDocument(doc);
 		}
 		writer.close();
 
-		DirectoryReader directoryReader = DirectoryReader.open(dir);
-		searcher = new IndexSearcher(directoryReader);
-
+		searcher = new IndexSearcher(dir, true);
 		allDocs = new MatchAllDocsQuery();
 
-	    PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
-	    allRecordDocs = new FilteredQuery(allDocs, recordFilter);
+    PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
+    allRecordDocs = new FilteredQuery(allDocs, recordFilter);
 	}
 
 	protected Document getDocument(String title, String access) {
 		Document doc = new Document();
 
-		doc.add(new StringField("title", title, Field.Store.YES));
-		doc.add(new StringField("access", access, Field.Store.YES));
+		doc.add(new Field("title", title, Field.Store.YES, Field.Index.NOT_ANALYZED));
+		doc.add(new Field("access", access, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
 		return doc;
 	}
 
 	protected void tearDown() throws Exception {
+		searcher.close();
 		dir.close();
 	}
 
