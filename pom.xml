@@ -34,6 +34,16 @@
 				<role>Lead Developer</role>
 			</roles>
 		</developer>
+        <developer>
+            <id>dkd-doan</id>
+            <name>Phuong Doan</name>
+            <email>phuong.doan@dkd.de</email>
+            <organization>dkd Internet Service GmbH</organization>
+            <organizationUrl>http://www.dkd.de</organizationUrl>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
 	</developers>
 	<reporting>
 		<outputDirectory>target/site</outputDirectory>
