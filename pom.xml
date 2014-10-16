@@ -44,6 +44,35 @@
 			</roles>
 		</developer>
 	</developers>
+	<contributors>
+	</contributors>
+	<organization>
+		<name>dkd Internet Service GmbH</name>
+		<url>http://www.dkd.de</url>
+	</organization>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+		</plugins>
+		<resources>
+		</resources>
+	</build>
 	<reporting>
 		<outputDirectory>target/site</outputDirectory>
 		<plugins>
@@ -90,35 +119,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-	<contributors>
-	</contributors>
-	<organization>
-		<name>dkd Internet Service GmbH</name>
-		<url>http://www.dkd.de</url>
-	</organization>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.6</version>
-			</plugin>
-		</plugins>
-		<resources>
-		</resources>
-	</build>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
