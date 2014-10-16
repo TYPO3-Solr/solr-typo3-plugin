@@ -139,9 +139,7 @@ public class AccessFilter extends Filter {
     Boolean accessGranted = false;
     Rootline accessRootline = new Rootline(documentGroupList);
 
-    for (Iterator<RootlineElement> accessRootlineIterator = accessRootline.iterator(); accessRootlineIterator.hasNext(); ) {
-      RootlineElement element = accessRootlineIterator.next();
-
+    for (RootlineElement element : accessRootline) {
       if (element.getType() == RootlineElementType.PAGE) {
         // for a page the user must have access to at least one access group set for the page
         accessGranted = accessGrantedForPage(element.getAccessGroups());
@@ -172,9 +170,7 @@ public class AccessFilter extends Filter {
   private Boolean accessGrantedForPage(HashSet<Integer> pageElementAccess) {
     Boolean accessGranted = false;
 
-    for (Iterator<Integer> userGroupAccessIterator = userGroupSet.iterator(); userGroupAccessIterator.hasNext(); ) {
-      Integer userGroup = userGroupAccessIterator.next();
-
+    for (Integer userGroup : userGroupSet) {
       if (pageElementAccess.contains(userGroup)) {
         accessGranted = true;
         break;
@@ -196,9 +192,7 @@ public class AccessFilter extends Filter {
   private Boolean accessGrantedForRecord(HashSet<Integer> recordElementAccess) {
     Boolean accessGranted = false;
 
-    for (Iterator<Integer> userGroupAccessIterator = userGroupSet.iterator(); userGroupAccessIterator.hasNext(); ) {
-      Integer userGroup = userGroupAccessIterator.next();
-
+    for (Integer userGroup : userGroupSet) {
       if (recordElementAccess.contains(userGroup)) {
         accessGranted = true;
         break;
