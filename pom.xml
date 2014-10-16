@@ -7,7 +7,6 @@
 	<modules>
 		<module>solr-typo3-utils</module>
 		<module>solr-typo3-access</module>
-		<!-- <module>solr-typo3-controlUpdate</module> -->
 	</modules>
 	<name>Solr TYPO3 Plugin</name>
 	<description>A plugin for Solr to implement TYPO3 support functionality.</description>
