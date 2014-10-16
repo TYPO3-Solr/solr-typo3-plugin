@@ -160,12 +160,12 @@
 				<version>5.1.21</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>solr-typo3-utils</artifactId>
-				<version>${version}</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>${groupId}</groupId>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>solr-typo3-access</artifactId>
 				<version>2.0</version>
 			</dependency>
