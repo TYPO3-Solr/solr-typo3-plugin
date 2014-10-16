@@ -4,5 +4,5 @@
 .project
 .DS_Store
 .idea/
-*/target/
+target
 *.iml
