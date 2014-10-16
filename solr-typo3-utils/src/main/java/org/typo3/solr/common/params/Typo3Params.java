@@ -24,7 +24,7 @@ package org.typo3.solr.common.params;
  */
 public interface Typo3Params {
 
-  /** TYPO3 namepsage for GET parameters. */
+  /** TYPO3 namespace for GET parameters. */
   String TYPO3 = "t3";
 
 }
