@@ -99,7 +99,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>jxr-maven-plugin</artifactId>
+				<artifactId>maven-jxr-plugin</artifactId>
 				<version>2.4</version>
 			</plugin>
 			<plugin>
