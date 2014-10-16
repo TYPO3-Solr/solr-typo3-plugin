@@ -18,7 +18,6 @@ package org.typo3.common.lang;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-
 import junit.framework.TestCase;
 
 

@@ -18,8 +18,6 @@ package org.typo3.common.lang;
 
 import java.util.Collection;
 import java.util.HashSet;
-//import java.util.Iterator;
-//import java.util.StringTokenizer;
 
 /**
  * String Utilities.
@@ -49,19 +47,6 @@ public final class StringUtils {
    * @param delim Delimiter
    * @return String[] Array of String tokens
    */
-//  public static String[] explode(String str, String delim) {
-//    StringTokenizer st = new StringTokenizer(str, delim);
-//
-//    String[] tokens = new String[st.countTokens()];
-//
-//    int i = 0;
-//    while (st.hasMoreTokens()) {
-//      tokens[i++] = st.nextToken();
-//    }
-//
-//    return tokens;
-//  }
-
   public static String[] explode(String str, String delim) {
 	  return org.apache.commons.lang3.StringUtils.split(str, delim);
   }
@@ -74,25 +59,6 @@ public final class StringUtils {
    * @param glue Glue / separator string.
    * @return String collection elements concatenated with glue.
    */
-//  @SuppressWarnings("rawtypes")
-//  public static String implode(Collection collection, String glue) {
-//    StringBuilder sb = new StringBuilder();
-//
-//    for (Iterator iterator = collection.iterator(); iterator.hasNext(); ) {
-//      sb.append(iterator.next());
-//      sb.append(glue);
-//    }
-//
-//    String implodedString = new String(sb);
-//
-//    if (implodedString.endsWith(glue)) {
-//      implodedString = implodedString.substring(0, implodedString.length() - glue.length());
-//    }
-//
-//    return implodedString;
-//  }
-
-  @SuppressWarnings("rawtypes")
   public static String implode(Collection collection, String glue) {
 	  return org.apache.commons.lang3.StringUtils.join(collection, glue);
   }
