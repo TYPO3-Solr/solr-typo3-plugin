@@ -75,8 +75,8 @@ public final class StringUtils {
 
     String[] values = explode(list, ",");
 
-    for (int i = 0; i < values.length; i++) {
-      integerHashSet.add(Integer.valueOf(Integer.parseInt(values[i])));
+    for (String value : values) {
+      integerHashSet.add(Integer.parseInt(value));
     }
 
     return integerHashSet;
