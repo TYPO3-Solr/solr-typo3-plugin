@@ -23,6 +23,7 @@ import java.util.HashSet;
  * String Utilities.
  *
  * @author Ingo Renner <ingo@typo3.org>
+ * @author Phuong Doan <phuong.doan@dkd.de>
  */
 public final class StringUtils {
 
