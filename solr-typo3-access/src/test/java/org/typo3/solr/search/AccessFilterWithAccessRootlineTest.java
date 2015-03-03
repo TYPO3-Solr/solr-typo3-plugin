@@ -204,7 +204,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	 Filter accessFilter = new AccessFilter();
 
 		TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
-		assertEquals("public documents only", 1, hits.totalHits);
+		assertEquals("public documents only", 3, hits.totalHits);
 	}
 
 }
