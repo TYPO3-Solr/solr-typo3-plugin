@@ -186,10 +186,10 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	}
 
 	public void testAccessFilterFindsRecordDocumentsRequiringAccessForAtLeastGroup1() throws Exception {
-		Filter accessFilter = new AccessFilter("0,1");
+		Filter filter = new AccessFilter("0,1");
 
-		TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
 		assertEquals("public documents and documents accessible to group 1", 2, hits.totalHits);
+		TopDocs hits = searcher.search(allRecordDocs, filter, 10);
 		assertEquals("allows access for public record document 'publicRecord3'",
 			"publicRecord3",
 			searcher.doc(hits.scoreDocs[0].doc).get("title")
@@ -201,9 +201,9 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	}
 
 	public void testAccessFilterFindsOnlyPublicRecordDocumentsWhenNotLoggedIn() throws Exception {
-		Filter accessFilter = new AccessFilter();
+		Filter filter = new AccessFilter();
 
-		TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
+		TopDocs hits = searcher.search(allRecordDocs, filter, 10);
 		assertEquals("public documents only", 3, hits.totalHits);
 	}
 
