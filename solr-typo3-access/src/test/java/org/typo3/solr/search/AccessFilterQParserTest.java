@@ -30,20 +30,20 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 
 	// setUp and tearDown
 
-  @BeforeClass
-  public static void beforeClass() throws Exception {
-    initCore("solrconfig.xml", "schema.xml");
-    createIndex();
-  }
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		initCore("solrconfig.xml", "schema.xml");
+		createIndex();
+	}
 
-  private static void createIndex() {
-    assertU(addDocument("public1", "0"));
-    assertU(addDocument("public2", "0"));
-    assertU(addDocument("protected1_group1", "1"));
-    assertU(addDocument("protected2_group1,2", "1,2"));
+	private static void createIndex() {
+		assertU(addDocument("public1", "0"));
+		assertU(addDocument("public2", "0"));
+		assertU(addDocument("protected1_group1", "1"));
+		assertU(addDocument("protected2_group1,2", "1,2"));
 
-    assertU(commit());
-  }
+		assertU(commit());
+	}
 
 
 	// tests
