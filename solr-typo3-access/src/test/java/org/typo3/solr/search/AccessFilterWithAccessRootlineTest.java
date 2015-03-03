@@ -201,7 +201,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	}
 
 	public void testAccessFilterFindsOnlyPublicRecordDocumentsWhenNotLoggedIn() throws Exception {
-	 Filter accessFilter = new AccessFilter();
+		Filter accessFilter = new AccessFilter();
 
 		TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
 		assertEquals("public documents only", 3, hits.totalHits);
