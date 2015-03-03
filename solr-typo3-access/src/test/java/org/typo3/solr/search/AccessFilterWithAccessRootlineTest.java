@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2011 Ingo Renner <ingo@typo3.org>
+ * Copyright 2010-2015 Ingo Renner <ingo@typo3.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -50,7 +51,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		dir = new RAMDirectory();
-		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_32);
+		Analyzer analyzer = new StandardAnalyzer();
 
 		Document[] docs = {
 			getDocument("public1", "0"),
@@ -86,8 +87,8 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	protected Document getDocument(String title, String access) {
 		Document doc = new Document();
 
-		doc.add(new Field("title", title, Field.Store.YES, Field.Index.NOT_ANALYZED));
-		doc.add(new Field("access", access, Field.Store.YES, Field.Index.NOT_ANALYZED));
+		doc.add(new StringField("title", title, Field.Store.YES));
+		doc.add(new StringField("access", access, Field.Store.YES));
 
 		return doc;
 	}
