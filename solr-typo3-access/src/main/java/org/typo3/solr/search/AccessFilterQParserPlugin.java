@@ -94,11 +94,6 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
   }
 
   @Override
-  public String getSourceId() {
-    return "$Id: AccessFilterQParserPlugin.java 88365 2011-11-30 00:11:10Z dkd-renner $";
-  }
-
-  @Override
   public String getSource() {
     return null;
   }
