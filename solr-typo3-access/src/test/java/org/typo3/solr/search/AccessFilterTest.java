@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.BinaryDocValuesField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -34,6 +35,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
+import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 
 
@@ -76,7 +78,7 @@ public class AccessFilterTest extends TestCase {
 		Document doc = new Document();
 
 		doc.add(new StringField("title", title, Field.Store.YES));
-		doc.add(new StringField("access", access, Field.Store.YES));
+		doc.add(new BinaryDocValuesField("access", new BytesRef(access)));
 
 		return doc;
 	}
