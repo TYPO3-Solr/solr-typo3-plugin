@@ -115,8 +115,6 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 	private static String addDocument(String title, String access) {
 		return adoc(
 			"id", title,
-			"appKey", "AccessFilterQParserTest",
-			"type", "JUnitTestDocument",
 			"title", title,
 			"access", access
 		);
