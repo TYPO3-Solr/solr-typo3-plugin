@@ -16,12 +16,12 @@
 
 package org.typo3.solr.search;
 
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.ConstantScoreQuery;
 import org.apache.lucene.search.Query;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
+import org.apache.solr.search.SyntaxError;
 import org.typo3.solr.common.params.AccessParams;
 
 
@@ -55,7 +55,7 @@ public class AccessFilterQParser extends QParser {
   }
 
   @Override
-  public Query parse() throws ParseException {
+  public Query parse() throws SyntaxError {
     return new ConstantScoreQuery(accessFilter);
   }
 
