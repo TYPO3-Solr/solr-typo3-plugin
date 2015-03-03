@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2011 Ingo Renner <ingo@typo3.org>
+ * Copyright 2010-2015 Ingo Renner <ingo@typo3.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -90,14 +90,14 @@ public class AccessFilterTest extends TestCase {
 		Filter filter = new AccessFilter();
 
 		TopDocs hits = searcher.search(allDocs, filter, 10);
-		assertEquals("only public documents", 2, hits.totalHits);
+		assertEquals("returns only public documents", 2, hits.totalHits);
 	}
 
 	public void testAccessFilterFindsDocumentsAllowedForGroup1() throws Exception {
 		Filter filter = new AccessFilter("0,1");
 
 		TopDocs hits = searcher.search(allDocs, filter, 10);
-		assertEquals("public documents and for group 1", 3, hits.totalHits);
+		assertEquals("returns public documents and for group 1", 3, hits.totalHits);
 		assertEquals("allows access for document 'protected1_group1'",
 			"protected1_group1",
 			searcher.doc(hits.scoreDocs[2].doc).get("title")
@@ -108,14 +108,14 @@ public class AccessFilterTest extends TestCase {
 		Filter filter = new AccessFilter("0,1,2");
 
 		TopDocs hits = searcher.search(allDocs, filter, 10);
-		assertEquals("public documents and for group 1 and group 2", 4, hits.totalHits);
+		assertEquals("returns public documents and for group 1 and group 2", 4, hits.totalHits);
 	}
 
 	public void testAccessFilterFiltersDocumentsWithInsufficientAccess() throws Exception {
 		Filter filter = new AccessFilter("0,2");
 
 		TopDocs hits = searcher.search(allDocs, filter, 10);
-		assertEquals("public documents", 2, hits.totalHits);
+		assertEquals("returns accessible documents", 2, hits.totalHits);
 	}
 
 }
