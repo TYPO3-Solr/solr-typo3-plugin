@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2011 Ingo Renner <ingo@typo3.org>
+ * Copyright 2010-2015 Ingo Renner <ingo@typo3.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,9 @@ public class RootlineElementTest extends TestCase {
 
   public void testRootlineElementThrowsExceptionForTooManyColons() {
     try {
-      RootlineElement wrongFormat = new RootlineElement("1:1,2,3:wrongFormat");
-
+      new RootlineElement("1:1,2,3:wrongFormat");
       fail("Should have raised a RootlineElementFormatException");
-    } catch (RootlineElementFormatException e) {
+    } catch (RootlineElementFormatException ignored) {
     }
   }
 
@@ -41,7 +40,7 @@ public class RootlineElementTest extends TestCase {
 
       RootlineElement accessRootlineRecordElement = new RootlineElement("r:1,2,3");
       assertNull(accessRootlineRecordElement.getId());
-    } catch (RootlineElementFormatException e) {
+    } catch (RootlineElementFormatException ignored) {
     }
   }
 
@@ -55,13 +54,13 @@ public class RootlineElementTest extends TestCase {
 
       RootlineElement accessRootlineRecordElement = new RootlineElement("r:1,2,3");
       assertTrue(accessRootlineRecordElement.getType() == RootlineElementType.RECORD);
-    } catch (RootlineElementFormatException e) {
+    } catch (RootlineElementFormatException ignored) {
     }
   }
 
   public void testRootlineElementCorrectlyParsesTheUserGroups() {
     try {
-      HashSet<Integer> expectedResult = new HashSet<Integer>();
+      HashSet<Integer> expectedResult = new HashSet<>();
       expectedResult.add(1);
       expectedResult.add(2);
       expectedResult.add(3);
@@ -70,7 +69,7 @@ public class RootlineElementTest extends TestCase {
       HashSet<Integer> actualResult = accessRootlineElement.getAccessGroups();
 
       assertTrue(actualResult.equals(expectedResult));
-    } catch (RootlineElementFormatException e) {
+    } catch (RootlineElementFormatException ignored) {
     }
   }
 
@@ -90,10 +89,10 @@ public class RootlineElementTest extends TestCase {
       RootlineElement accessRootlineRecordElement = new RootlineElement(accessRootlineRecordElementString);
       assertEquals(accessRootlineRecordElementString, accessRootlineRecordElement.toString());
 
-      RootlineElement accessRootlineBacwardsCompatibleContentElement = new RootlineElement(accessRootlineBackwardsCompatibleContentElementString);
+      RootlineElement accessRootlineBackwardsCompatibleContentElement = new RootlineElement(accessRootlineBackwardsCompatibleContentElementString);
         // should create the new format out of the old format
-      assertEquals(accessRootlineContentElementString, accessRootlineBacwardsCompatibleContentElement.toString());
-    } catch (RootlineElementFormatException e) {
+      assertEquals(accessRootlineContentElementString, accessRootlineBackwardsCompatibleContentElement.toString());
+    } catch (RootlineElementFormatException ignored) {
     }
   }
 
