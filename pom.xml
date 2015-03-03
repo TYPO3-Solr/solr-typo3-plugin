@@ -24,11 +24,9 @@
 	</licenses>
 	<developers>
 		<developer>
-			<id>dkd-renner</id>
+			<id>irnnr</id>
 			<name>Ingo Renner</name>
-			<email>ingo.renner@dkd.de</email>
-			<organization>dkd Internet Service GmbH</organization>
-			<organizationUrl>http://www.dkd.de</organizationUrl>
+			<email>ingo.renner@gmail.com</email>
 			<roles>
 				<role>Lead Developer</role>
 			</roles>
