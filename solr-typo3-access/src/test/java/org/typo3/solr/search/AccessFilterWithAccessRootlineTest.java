@@ -80,8 +80,8 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 		searcher = new IndexSearcher(reader);
 		allDocs = new MatchAllDocsQuery();
 
-    PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
-    allRecordDocs = new FilteredQuery(allDocs, recordFilter);
+		PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
+		allRecordDocs = new FilteredQuery(allDocs, recordFilter);
 	}
 
 	protected Document getDocument(String title, String access) {
@@ -113,68 +113,68 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	}
 
 	public void testAccessFilterFindsDocumentsAllowedForGroup1And2() throws Exception {
-    Filter filter = new AccessFilter("0,1,2");
+		Filter filter = new AccessFilter("0,1,2");
 
-    TopDocs hits = searcher.search(allDocs, filter, 10);
-    assertEquals("public documents and for groups 1 and 2", 7, hits.totalHits);
+		TopDocs hits = searcher.search(allDocs, filter, 10);
+		assertEquals("public documents and for groups 1 and 2", 7, hits.totalHits);
 
-    assertEquals("allows access for document 'protected1__1_2||3_1'",
-      "protected1__1_2||3_1",
-      searcher.doc(hits.scoreDocs[3].doc).get("title")
-    );
-    assertEquals("allows access for document 'protected2__1_2||3_0'",
-      "protected2__1_2||3_0",
-      searcher.doc(hits.scoreDocs[4].doc).get("title")
-    );
-    assertEquals("allows access for document 'protected3__1_2||3_1&&2'",
-      "protected3__1_2||3_1&&2",
-      searcher.doc(hits.scoreDocs[5].doc).get("title")
-    );
-  }
+		assertEquals("allows access for document 'protected1__1_2||3_1'",
+			"protected1__1_2||3_1",
+			searcher.doc(hits.scoreDocs[3].doc).get("title")
+		);
+		assertEquals("allows access for document 'protected2__1_2||3_0'",
+			"protected2__1_2||3_0",
+			searcher.doc(hits.scoreDocs[4].doc).get("title")
+		);
+		assertEquals("allows access for document 'protected3__1_2||3_1&&2'",
+			"protected3__1_2||3_1&&2",
+			searcher.doc(hits.scoreDocs[5].doc).get("title")
+		);
+	}
 
 	public void testAccessFilterFindsDocumentsAllowedForGroup1And3() throws Exception {
-    Filter filter = new AccessFilter("0,1,3");
+		Filter filter = new AccessFilter("0,1,3");
 
-    TopDocs hits = searcher.search(allDocs, filter, 10);
-    assertEquals("public documents and for groups 1 and 3", 6, hits.totalHits);
+		TopDocs hits = searcher.search(allDocs, filter, 10);
+		assertEquals("public documents and for groups 1 and 3", 6, hits.totalHits);
 
-    assertEquals("allows access for document 'protected1__1_2||3_1'",
-      "protected1__1_2||3_1",
-      searcher.doc(hits.scoreDocs[3].doc).get("title")
-    );
-    assertEquals("allows access for document 'protected2__1_2||3_0'",
-      "protected2__1_2||3_0",
-      searcher.doc(hits.scoreDocs[4].doc).get("title")
-    );
-  }
+		assertEquals("allows access for document 'protected1__1_2||3_1'",
+			"protected1__1_2||3_1",
+			searcher.doc(hits.scoreDocs[3].doc).get("title")
+		);
+		assertEquals("allows access for document 'protected2__1_2||3_0'",
+			"protected2__1_2||3_0",
+			searcher.doc(hits.scoreDocs[4].doc).get("title")
+		);
+	}
 
 	public void testAccessFilterFindsDocumentsRequiringAccessForGroup1And2And3() throws Exception {
-    Filter filter = new AccessFilter("0,1,2,3");
+		Filter filter = new AccessFilter("0,1,2,3");
 
-    TopDocs hits = searcher.search(allDocs, filter, 10);
-    assertEquals("public documents and for groups 1,2,3", 8, hits.totalHits);
+		TopDocs hits = searcher.search(allDocs, filter, 10);
+		assertEquals("public documents and for groups 1,2,3", 8, hits.totalHits);
 
-    assertEquals("allows access for document 'protected1__1_2||3_1'",
-      "protected1__1_2||3_1",
-      searcher.doc(hits.scoreDocs[3].doc).get("title")
-    );
-    assertEquals("allows access for document 'protected2__1_2||3_0'",
-      "protected2__1_2||3_0",
-      searcher.doc(hits.scoreDocs[4].doc).get("title")
-    );
-    assertEquals("allows access for document 'protected3__1_2||3_1&&2'",
-      "protected3__1_2||3_1&&2",
-      searcher.doc(hits.scoreDocs[5].doc).get("title")
-    );
-    assertEquals("allows access for document 'protected4__1_2||3_1&&2&&3'",
-      "protected4__1_2||3_1&&2&&3",
-      searcher.doc(hits.scoreDocs[6].doc).get("title")
-    );
-    assertEquals("allows access for record document 'protectedRecord5__r1||2||3'",
-      "protectedRecord5__r1||2||3",
-      searcher.doc(hits.scoreDocs[7].doc).get("title")
-    );
-  }
+		assertEquals("allows access for document 'protected1__1_2||3_1'",
+			"protected1__1_2||3_1",
+			searcher.doc(hits.scoreDocs[3].doc).get("title")
+		);
+		assertEquals("allows access for document 'protected2__1_2||3_0'",
+			"protected2__1_2||3_0",
+			searcher.doc(hits.scoreDocs[4].doc).get("title")
+		);
+		assertEquals("allows access for document 'protected3__1_2||3_1&&2'",
+			"protected3__1_2||3_1&&2",
+			searcher.doc(hits.scoreDocs[5].doc).get("title")
+		);
+		assertEquals("allows access for document 'protected4__1_2||3_1&&2&&3'",
+			"protected4__1_2||3_1&&2&&3",
+			searcher.doc(hits.scoreDocs[6].doc).get("title")
+		);
+		assertEquals("allows access for record document 'protectedRecord5__r1||2||3'",
+			"protectedRecord5__r1||2||3",
+			searcher.doc(hits.scoreDocs[7].doc).get("title")
+		);
+	}
 
 	public void testAccessFilterFiltersDocumentsWithInsufficientAccess() throws Exception {
 		Filter filter = new AccessFilter("0,2");
@@ -183,26 +183,26 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 		assertEquals("public documents and documents for group 2 only", 4, hits.totalHits);
 	}
 
-  public void testAccessFilterFindsRecordDocumentsRequiringAccessForAtLeastGroup1() throws Exception {
-    Filter accessFilter = new AccessFilter("0,1");
+	public void testAccessFilterFindsRecordDocumentsRequiringAccessForAtLeastGroup1() throws Exception {
+		Filter accessFilter = new AccessFilter("0,1");
 
-    TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
-    assertEquals("public documents and documents accessible to group 1", 2, hits.totalHits);
-    assertEquals("allows access for public record document 'publicRecord3'",
-      "publicRecord3",
-      searcher.doc(hits.scoreDocs[0].doc).get("title")
-    );
-    assertEquals("allows access for protected record document 'protectedRecord5__r1||2||3'",
-      "protectedRecord5__r1||2||3",
-      searcher.doc(hits.scoreDocs[1].doc).get("title")
-    );
+		TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
+		assertEquals("public documents and documents accessible to group 1", 2, hits.totalHits);
+		assertEquals("allows access for public record document 'publicRecord3'",
+			"publicRecord3",
+			searcher.doc(hits.scoreDocs[0].doc).get("title")
+		);
+		assertEquals("allows access for protected record document 'protectedRecord5__r1||2||3'",
+			"protectedRecord5__r1||2||3",
+			searcher.doc(hits.scoreDocs[1].doc).get("title")
+		);
 	}
 
-  public void testAccessFilterFindsOnlyPublicRecordDocumentsWhenNotLoggedIn() throws Exception {
-   Filter accessFilter = new AccessFilter();
+	public void testAccessFilterFindsOnlyPublicRecordDocumentsWhenNotLoggedIn() throws Exception {
+	 Filter accessFilter = new AccessFilter();
 
-    TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
-    assertEquals("public documents only", 1, hits.totalHits);
-  }
+		TopDocs hits = searcher.search(allRecordDocs, accessFilter, 10);
+		assertEquals("public documents only", 1, hits.totalHits);
+	}
 
 }
