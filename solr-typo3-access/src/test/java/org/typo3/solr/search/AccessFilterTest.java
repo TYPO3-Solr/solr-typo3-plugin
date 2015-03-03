@@ -22,7 +22,11 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -35,15 +39,15 @@ import org.apache.lucene.util.Version;
 
 public class AccessFilterTest extends TestCase {
 
-	private Analyzer analyzer;
 	private Directory dir;
+	private IndexReader reader;
 	private IndexSearcher searcher;
 	private Query allDocs;
 
 
 	protected void setUp() throws Exception {
 		dir = new RAMDirectory();
-		analyzer = new StandardAnalyzer();
+		Analyzer analyzer = new StandardAnalyzer();
 
 		Document[] docs = {
 			getDocument("public1", "0"),
@@ -53,33 +57,32 @@ public class AccessFilterTest extends TestCase {
 			getDocument("protected2_group1,2", "1,2")
 		};
 
-		IndexWriter writer = new IndexWriter(
-			dir,
-			analyzer,
-			true,
-			IndexWriter.MaxFieldLength.UNLIMITED
-		);
+		IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_4_10_3, analyzer);
+		conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+		IndexWriter writer = new IndexWriter(dir, conf);
 
 		for (Document doc : docs) {
 			writer.addDocument(doc);
 		}
 		writer.close();
 
-		searcher = new IndexSearcher(dir, true);
+		reader = DirectoryReader.open(dir);
+		searcher = new IndexSearcher(reader);
 		allDocs = new MatchAllDocsQuery();
 	}
 
 	protected Document getDocument(String title, String access) {
 		Document doc = new Document();
 
-		doc.add(new Field("title", title, Field.Store.YES, Field.Index.NOT_ANALYZED));
-		doc.add(new Field("access", access, Field.Store.YES, Field.Index.NOT_ANALYZED));
+		doc.add(new StringField("title", title, Field.Store.YES));
+		doc.add(new StringField("access", access, Field.Store.YES));
 
 		return doc;
 	}
 
 	protected void tearDown() throws Exception {
-		searcher.close();
+		reader.close();
 		dir.close();
 	}
 

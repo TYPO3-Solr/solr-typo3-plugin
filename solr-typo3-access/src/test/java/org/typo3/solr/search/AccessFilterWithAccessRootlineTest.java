@@ -22,7 +22,10 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
@@ -38,8 +41,8 @@ import org.apache.lucene.util.Version;
 
 public class AccessFilterWithAccessRootlineTest extends TestCase {
 
-	private Analyzer analyzer;
 	private Directory dir;
+	private IndexReader reader;
 	private IndexSearcher searcher;
 	private Query allDocs;
 	private FilteredQuery allRecordDocs;
@@ -47,7 +50,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		dir = new RAMDirectory();
-		analyzer = new StandardAnalyzer(Version.LUCENE_32);
+		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_32);
 
 		Document[] docs = {
 			getDocument("public1", "0"),
@@ -62,19 +65,18 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 			getDocument("protectedRecord5__r1||2||3", "r:1,2,3")
 		};
 
-		IndexWriter writer = new IndexWriter(
-			dir,
-			analyzer,
-			true,
-			IndexWriter.MaxFieldLength.UNLIMITED
-		);
+		IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_4_10_3, analyzer);
+		conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
+		IndexWriter writer = new IndexWriter(dir, conf);
 
 		for (Document doc : docs) {
 			writer.addDocument(doc);
 		}
 		writer.close();
 
-		searcher = new IndexSearcher(dir, true);
+		reader = DirectoryReader.open(dir);
+		searcher = new IndexSearcher(reader);
 		allDocs = new MatchAllDocsQuery();
 
     PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
@@ -91,7 +93,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	}
 
 	protected void tearDown() throws Exception {
-		searcher.close();
+		reader.close();
 		dir.close();
 	}
 
