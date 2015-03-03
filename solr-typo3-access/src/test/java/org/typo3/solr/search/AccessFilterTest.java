@@ -43,7 +43,7 @@ public class AccessFilterTest extends TestCase {
 
 	protected void setUp() throws Exception {
 		dir = new RAMDirectory();
-		analyzer = new StandardAnalyzer(Version.LUCENE_29);
+		analyzer = new StandardAnalyzer();
 
 		Document[] docs = {
 			getDocument("public1", "0"),
