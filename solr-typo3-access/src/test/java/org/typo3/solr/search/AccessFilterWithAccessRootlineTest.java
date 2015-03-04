@@ -29,13 +29,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.FilteredQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.PrefixFilter;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.BytesRef;
@@ -47,8 +41,8 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	private Directory dir;
 	private IndexReader reader;
 	private IndexSearcher searcher;
-	private Query allDocs;
-	private FilteredQuery allRecordDocs;
+	private Query allDocsQuery;
+	private Query allRecordDocsQuery;
 
 
 	protected void setUp() throws Exception {
@@ -80,7 +74,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 
 		reader = DirectoryReader.open(dir);
 		searcher = new IndexSearcher(reader);
-		allDocs = new MatchAllDocsQuery();
+		allDocsQuery = new MatchAllDocsQuery();
 
 		PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
 		allRecordDocs = new FilteredQuery(allDocs, recordFilter);
@@ -103,21 +97,21 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	public void testAccessFilterFindsOnlyPublicDocumentsWhenNotLoggedIn() throws Exception {
 		Filter filter = new AccessFilter();
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
+		TopDocs hits = searcher.search(allDocsQuery, filter, 10);
 		assertEquals("only public documents", 3, hits.totalHits);
 	}
 
 	public void testAccessFilterFindsDocumentsAllowedForGroup1() throws Exception {
 		Filter filter = new AccessFilter("0,1");
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
+		TopDocs hits = searcher.search(allDocsQuery, filter, 10);
 		assertEquals("public documents and for group 1", 4, hits.totalHits);
 	}
 
 	public void testAccessFilterFindsDocumentsAllowedForGroup1And2() throws Exception {
 		Filter filter = new AccessFilter("0,1,2");
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
+		TopDocs hits = searcher.search(allDocsQuery, filter, 10);
 		assertEquals("public documents and for groups 1 and 2", 7, hits.totalHits);
 
 		assertEquals("allows access for document 'protected1__1_2||3_1'",
@@ -137,7 +131,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	public void testAccessFilterFindsDocumentsAllowedForGroup1And3() throws Exception {
 		Filter filter = new AccessFilter("0,1,3");
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
+		TopDocs hits = searcher.search(allDocsQuery, filter, 10);
 		assertEquals("public documents and for groups 1 and 3", 6, hits.totalHits);
 
 		assertEquals("allows access for document 'protected1__1_2||3_1'",
@@ -153,7 +147,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	public void testAccessFilterFindsDocumentsRequiringAccessForGroup1And2And3() throws Exception {
 		Filter filter = new AccessFilter("0,1,2,3");
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
+		TopDocs hits = searcher.search(allDocsQuery, filter, 10);
 		assertEquals("public documents and for groups 1,2,3", 8, hits.totalHits);
 
 		assertEquals("allows access for document 'protected1__1_2||3_1'",
@@ -181,13 +175,13 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 	public void testAccessFilterFiltersDocumentsWithInsufficientAccess() throws Exception {
 		Filter filter = new AccessFilter("0,2");
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
+		TopDocs hits = searcher.search(allDocsQuery, filter, 10);
 		assertEquals("public documents and documents for group 2 only", 4, hits.totalHits);
 	}
 
 	public void testAccessFilterFindsRecordDocumentsRequiringAccessForAtLeastGroup1() throws Exception {
 		Filter filter = new AccessFilter("0,1");
-		TopDocs hits = searcher.search(allRecordDocs, filter, 10);
+		TopDocs hits = searcher.search(allRecordDocsQuery, filter, 10);
 
 		assertEquals("public documents and documents accessible to group 1", 2, hits.totalHits);
 		assertEquals("allows access for public record document 'publicRecord3'",
@@ -202,7 +196,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 
 	public void testAccessFilterFindsOnlyPublicRecordDocumentsWhenNotLoggedIn() throws Exception {
 		Filter filter = new AccessFilter();
-		TopDocs hits = searcher.search(allRecordDocs, filter, 10);
+		TopDocs hits = searcher.search(allRecordDocsQuery, filter, 10);
 
 		assertEquals("public documents only", 3, hits.totalHits);
 	}
