@@ -52,14 +52,14 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 		Document[] docs = {
 			getDocument("public1", "0"),
 			getDocument("public2", "0"),
-			getDocument("publicRecord3", "r:0"),
+			getDocument("publicRecord3", "r:0", "record"),
 
 			getDocument("protected1__1_2||3_1", "1:1/2:2,3/c:1"),
 			getDocument("protected2__1_2||3_0", "1:1/2:2,3/c:0"),
 			getDocument("protected3__1_2||3_1&&2", "1:1/2:2,3/c:1,2"),
 			getDocument("protected4__1_2||3_1&&2&&3", "1:1/2:2,3/c:1,2,3"),
 
-			getDocument("protectedRecord5__r1||2||3", "r:1,2,3")
+			getDocument("protectedRecord5__r1||2||3", "r:1,2,3", "record")
 		};
 
 		IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_4_10_3, analyzer);
@@ -76,14 +76,18 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 		searcher = new IndexSearcher(reader);
 		allDocsQuery = new MatchAllDocsQuery();
 
-		PrefixFilter recordFilter = new PrefixFilter(new Term("access", "r"));
-		allRecordDocs = new FilteredQuery(allDocs, recordFilter);
+		allRecordDocsQuery = new TermQuery(new Term("type", "record"));
 	}
 
 	protected Document getDocument(String title, String access) {
+		return getDocument(title, access, "content");
+	}
+
+	protected Document getDocument(String title, String access, String type) {
 		Document doc = new Document();
 
 		doc.add(new StringField("title", title, Field.Store.YES));
+		doc.add(new StringField("type", type, Field.Store.YES));
 		doc.add(new BinaryDocValuesField("access", new BytesRef(access)));
 
 		return doc;
@@ -198,7 +202,7 @@ public class AccessFilterWithAccessRootlineTest extends TestCase {
 		Filter filter = new AccessFilter();
 		TopDocs hits = searcher.search(allRecordDocsQuery, filter, 10);
 
-		assertEquals("public documents only", 3, hits.totalHits);
+		assertEquals("public record documents only", 1, hits.totalHits);
 	}
 
 }
