@@ -129,14 +129,14 @@
 			<dependency>
 				<groupId>org.apache.solr</groupId>
 				<artifactId>solr-test-framework</artifactId>
-				<version>4.10.3</version>
+				<version>4.10.4</version>
 				<type>jar</type>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.solr</groupId>
 				<artifactId>solr-core</artifactId>
-				<version>4.10.3</version>
+				<version>4.10.4</version>
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
