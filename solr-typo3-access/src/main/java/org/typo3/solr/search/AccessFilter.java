@@ -41,11 +41,6 @@ import org.typo3.common.lang.StringUtils;
 public class AccessFilter extends Filter {
 
   /**
-   * Serial Version ID.
-   */
-  private static final long serialVersionUID = -7650845272189098977L;
-
-  /**
    * Comma separated list of groups the user has access to.
    */
   private String userGroupList;
