@@ -41,11 +41,6 @@ import org.typo3.common.lang.StringUtils;
 public class AccessFilter extends Filter {
 
   /**
-   * Comma separated list of groups the user has access to.
-   */
-  private String userGroupList;
-
-  /**
    * HashSet representation of userGroupList.
    */
   private HashSet<Integer> userGroupSet;
@@ -208,8 +203,7 @@ public class AccessFilter extends Filter {
    * @param userGroupList comma separated list of user group Ids
    */
   private void setUserGroupList(String userGroupList) {
-    this.userGroupList = userGroupList;
-    this.userGroupSet = StringUtils.commaSeparatedListToIntegerHashSet(this.userGroupList);
+    this.userGroupSet = StringUtils.commaSeparatedListToIntegerHashSet(userGroupList);
   }
 
 }
