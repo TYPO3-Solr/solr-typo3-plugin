@@ -8,18 +8,16 @@ values are comma separated lists of user group IDs, the index field stores the
 groups that are allowed to access a particular document while the groups the
 user is a member of / has access to are specified through a filter parameter.
 
-This is the syntax for searching in Solr:
-
-http://localhost:8983/path/to/solr/select/?q={!typo3access field=fieldname groups=permittedUserGroups}remainder of query
-
 Example :
 
-http://localhost:8983/solr/bitwise/select/?q={!bitwise field=access groups=0,1,4,10}title:Hello
+http://localhost:8983/path/to/solr/select/?fq={!typo3access field=fieldname}permittedUserGroups&q=...
+
+http://localhost:8983/solr/collection1/select/?q=title:Hello&fq={!typo3access}0,1,4,10
 
 The field parameter is optional and defaults to "access"
 
-The field parameter is the name of the string field holding the access restrictions for a docuemnt
-The groups parameter is the comma separated list of groups the user has access to
+ * fieldname is the name of the string field holding the access restrictions for a document
+ * permittedUserGroups is the comma separated list of groups the user has access to
 
 To use this plugin, simply copy the jar file containing the plugin classes into your
 $SOLR_HOME/lib directory and then add the following to your solrconfig.xml file:
