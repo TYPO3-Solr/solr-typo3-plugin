@@ -17,8 +17,8 @@
 package org.typo3.solr.search;
 
 import org.apache.solr.SolrTestCaseJ4;
-import org.apache.solr.common.params.CommonParams;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 
 /**
@@ -48,15 +48,14 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 
 	// tests
 
-
+	@Test
 	public void testSolrFindsOnlyPublicDocumentsWhenNotLoggedIn() {
 		assertQ(
 			"couldn't find public documents",
 			req(
 					"q", "*:*",
 					"qt", "/select",
-					"fq", "{!typo3access}0",
-					CommonParams.VERSION, "2.2"
+					"fq", "{!typo3access}0"
 				),
 			"//result[@numFound=2]",
 			"//str[@name='id'][.='public1']",
@@ -64,14 +63,14 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 		);
 	}
 
+	@Test
 	public void testSolrFindsDocumentsAllowedForGroup1() throws Exception {
 		assertQ(
 			"couldn't find public documents and documents for group 1",
 			req(
 					"q", "*:*",
 					"qt", "/select",
-					"fq", "{!typo3access}0,1",
-					CommonParams.VERSION, "2.2"
+					"fq", "{!typo3access}0,1"
 				),
 			"//result[@numFound=3]",
 			"//str[@name='id'][.='public1']",
@@ -80,27 +79,27 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 		);
 	}
 
+	@Test
 	public void testSolrFindsDocumentsRequiringAccessForGroup1And2() throws Exception {
 		assertQ(
 			"couldn't find public documents and documents for group 1 and group 2",
 			req(
 					"q", "*:*",
 					"qt", "/select",
-					"fq", "{!typo3access}0,1,2",
-					CommonParams.VERSION, "2.2"
+					"fq", "{!typo3access}0,1,2"
 				),
 			"//result[@numFound=4]"
 		);
 	}
 
+	@Test
 	public void testSolrFiltersDocumentsWithInsufficientAccess() throws Exception {
 		assertQ(
 			"found public documents only",
 			req(
 					"q", "*:*",
 					"qt", "/select",
-					"fq", "{!typo3access}0,2",
-					CommonParams.VERSION, "2.2"
+					"fq", "{!typo3access}0,2"
 				),
 			"//result[@numFound=2]",
 			"//str[@name='id'][.='public1']",
