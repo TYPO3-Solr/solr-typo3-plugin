@@ -16,24 +16,17 @@ Example :
 
 http://localhost:8983/solr/bitwise/select/?q={!bitwise field=access groups=0,1,4,10}title:Hello
 
-The field parameter is optional
+The field parameter is optional and defaults to "access"
 
-The field parameter is the name of the integer field
-The group parameter is the comma separated list of groups the user has access to
+The field parameter is the name of the string field holding the access restrictions for a docuemnt
+The groups parameter is the comma separated list of groups the user has access to
 
-To test out this plugin, simply copy the jar file containing the plugin classes into your $SOLR_HOME/lib directory and then
-add the following to your solrconfig.xml file :
+To use this plugin, simply copy the jar file containing the plugin classes into your
+$SOLR_HOME/lib directory and then add the following to your solrconfig.xml file:
 
 <queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin" />
 
 Restart your servlet container.
 
-
-Migrate from Solr 3.6 to Solr 4.0
-
-1. For running the JUnit-Tests insert this following field in your schema (general_schema_fields.xml):
-<field name="_version_" type="long" indexed="true" stored="true"/>
-
-2. To test out this plugin, copy the solr-typo3-access.jar and the solr-typo3-utils.jar into your $SOLR_HOME/lib directory.
-The solr-typo3-utils.jar depends on the commons-lang3.jar. Please download this jar from http://commons.apache.org/lang/ and
+The solr-typo3-access.jar depends on the commons-lang3.jar. Please download this jar from http://commons.apache.org/lang/ and
 copy it into your $SOLR_HOME/lib directory.
