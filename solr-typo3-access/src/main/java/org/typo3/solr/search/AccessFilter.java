@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2011 Ingo Renner <ingo@typo3.org>
+ * Copyright 2010-2015 Ingo Renner <ingo@typo3.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,12 @@ package org.typo3.solr.search;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.TermDocs;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.FieldCache;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.util.Bits;
+import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.OpenBitSet;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
@@ -90,11 +89,34 @@ public class AccessFilter extends Filter {
   /**
    * Filters the documents based on the access granted.
    *
-   * @param reader The index reader
+   * @param context @inheritDoc
+   * @param acceptDocs @inheritDoc
    * @return OpenBitSet
    * @throws IOException When an error occurs while reading from the index.
    */
   @Override
+  public DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException {
+    AtomicReader reader = context.reader();
+    OpenBitSet bits = new OpenBitSet(reader.maxDoc());
+
+    BinaryDocValues values = reader.getBinaryDocValues(accessField);
+
+    for (int i = 0; i < reader.maxDoc(); i++) {
+      BytesRef bytes = values.get(i);
+      String documentGroupList = bytes.utf8ToString();
+
+      if (accessGranted(documentGroupList)) {
+        bits.set(i);
+      }
+    }
+
+    return bits;
+  }
+
+
+/*
+
+
   public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
     String[] access = FieldCache.DEFAULT.getStrings(reader, accessField);
     OpenBitSet bits = new OpenBitSet(reader.maxDoc());
@@ -117,6 +139,8 @@ public class AccessFilter extends Filter {
 
     return bits;
   }
+*/
+
 
   /**
    * Checks whether access is allowed based on the document's required groups
