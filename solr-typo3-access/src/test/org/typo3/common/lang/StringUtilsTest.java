@@ -41,7 +41,7 @@ public class StringUtilsTest extends TestCase {
     String[] actualResult = StringUtils.explode(testString, ",");
 
     for (int i = 0; i < actualResult.length; i++) {
-      assertTrue(actualResult[i].equals(expectedResult[i]));
+      TestCase.assertTrue(actualResult[i].equals(expectedResult[i]));
     }
 
   }
@@ -51,10 +51,10 @@ public class StringUtilsTest extends TestCase {
 
     HashSet<Integer> actualResult = StringUtils.commaSeparatedListToIntegerHashSet(testString);
 
-    assertTrue(actualResult.size() == 3);
-    assertTrue(actualResult.contains(new Integer(1)));
-    assertTrue(actualResult.contains(new Integer(2)));
-    assertTrue(actualResult.contains(new Integer(3)));
+    TestCase.assertTrue(actualResult.size() == 3);
+    TestCase.assertTrue(actualResult.contains(new Integer(1)));
+    TestCase.assertTrue(actualResult.contains(new Integer(2)));
+    TestCase.assertTrue(actualResult.contains(new Integer(3)));
   }
 
 }
