@@ -5,8 +5,8 @@
 
 
 	<!-- field types -->
-	<fieldType name="string"  class="solr.StrField"  sortMissingLast="true" omitNorms="true"/>
-	<fieldType name="long"    class="solr.TrieLongField"   precisionStep="0" positionIncrementGap="0" omitNorms="true" />
+	<fieldType name="string" class="solr.StrField" />
+	<fieldType name="long"   class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0" omitNorms="true" />
 
 
 	<!-- fields -->
@@ -15,7 +15,7 @@
 
 	<field name="id"        type="string" indexed="true" stored="true" required="true" />
 
-	<field name="title"     type="string" indexed="true" stored="true" termVectors="true" omitNorms="true" />
 	<field name="access"    type="string" indexed="true" stored="true" default="c:0" docValues="true" />
+	<field name="title"     type="string" indexed="true"  stored="true" />
 
 </schema>
