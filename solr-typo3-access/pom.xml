@@ -21,9 +21,5 @@
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.typo3.solr</groupId>
-			<artifactId>solr-typo3-utils</artifactId>
-		</dependency>
 	</dependencies>
 </project>
