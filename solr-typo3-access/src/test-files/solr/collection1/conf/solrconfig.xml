@@ -1,81 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-	The config name property is constructed as follows
+<config>
 
-	tx_solr		- The extension key
-	x-y-z		- The extension version this config is meant to work with
-	YYYYMMDD	- The date the config file was changed the last time
+	<dataDir>${solr.data.dir:}</dataDir>
 
-	When changing the config, the name property must be updated. There is a
-	status report - tx_solr_report_SolrconfigStatus - checking against this
-	name property, that status check must be updated as well.
--->
-<config name="tx_solr-2-8-0--20120925">
+	<!--  The DirectoryFactory to use for indexes.
+        solr.StandardDirectoryFactory, the default, is filesystem based.
+        solr.RAMDirectoryFactory is memory based and not persistent. -->
+	<directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.RAMDirectoryFactory}"/>
 
-	<luceneMatchVersion>LUCENE_36</luceneMatchVersion>
-
+	<luceneMatchVersion>${tests.luceneMatchVersion:LUCENE_CURRENT}</luceneMatchVersion>
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 
-
-	<!-- Tika / Solr Cell -->
-	<lib dir="../dist/" regex="apache-solr-cell-\d.*\.jar" />
-	<lib dir="../contrib/extraction/lib" />
-
-	<!-- Clustering -->
-	<lib dir="../dist/" regex="apache-solr-clustering-\d.*\.jar" />
-	<lib dir="../contrib/clustering/lib/" />
-
-	<!-- Data Import Handler -->
-	<lib dir="../dist/" regex="apache-solr-dataimporthandler-.*\.jar" />
-	<lib dir="../contrib/dataimporthandler/lib/" />
-
-	<!-- Language Analysis Extras -->
-	<lib dir="../dist/" regex="apache-solr-analysis-extras-.*\.jar" />
-	<lib dir="../contrib/analysis-extras/lib/" />
-	<lib dir="../contrib/analysis-extras/lucene-libs/" />
-
-	<!-- Language Identification -->
-	<lib dir="../dist/" regex="apache-solr-langid-\d.*\.jar" />
-	<lib dir="../contrib/langid/lib/" regex=".*\.jar" />
-
-	<!-- Velocity Template Engine -->
-	<lib dir="../dist/" regex="apache-solr-velocity-\d.*\.jar" />
-	<lib dir="../contrib/velocity/lib" regex=".*\.jar" />
-
-	<!-- TYPO3 Plugins -->
-	<lib dir="../typo3lib/" />
-
-
 	<indexConfig>
-		<useCompoundFile>false</useCompoundFile>
+		<!-- this sys property is not set by SolrTestCaseJ4 because we ideally want to use
+               the RandomMergePolicy in all tests - but some tests expect very specific
+               Merge behavior, so those tests can set it as needed.
+		-->
+		<mergePolicy class="${solr.tests.mergePolicy:org.apache.solr.util.RandomMergePolicy}" />
 
-		<mergeFactor>10</mergeFactor>
-		<maxBufferedDocs>1000</maxBufferedDocs>
+		<useCompoundFile>${useCompoundFile:false}</useCompoundFile>
 
-		<ramBufferSizeMB>32</ramBufferSizeMB>
-		<maxFieldLength>10000</maxFieldLength>
+		<maxBufferedDocs>${solr.tests.maxBufferedDocs}</maxBufferedDocs>
+		<maxIndexingThreads>${solr.tests.maxIndexingThreads}</maxIndexingThreads>
+		<ramBufferSizeMB>${solr.tests.ramBufferSizeMB}</ramBufferSizeMB>
+
+		<mergeScheduler class="${solr.tests.mergeScheduler}" />
+		<nrtMode>${solr.tests.nrtMode:true}</nrtMode>
 
 		<writeLockTimeout>1000</writeLockTimeout>
-		<lockType>native</lockType>
-		<unlockOnStartup>false</unlockOnStartup>
+		<commitLockTimeout>10000</commitLockTimeout>
 
-		<reopenReaders>true</reopenReaders>
-
-		<deletionPolicy class="solr.SolrDeletionPolicy">
-			<str name="maxCommitsToKeep">1</str>
-			<str name="maxOptimizedCommitsToKeep">0</str>
-		</deletionPolicy>
-
-		<infoStream file="INFOSTREAM.txt">false</infoStream>
+		<!-- this sys property is not set by SolrTestCaseJ4 because almost all tests should
+               use the single process lockType for speed - but tests that explicitly need
+               to vary the lockType canset it as needed.
+		-->
+		<lockType>${solr.tests.lockType:single}</lockType>
 	</indexConfig>
 
 
 	<updateHandler class="solr.DirectUpdateHandler2">
-		<autoCommit>
-			<maxDocs>100</maxDocs>
-			<maxTime>3600000</maxTime>
-		</autoCommit>
+		<updateLog enable="${enable.update.log:true}">
+			<str name="dir">${solr.ulog.dir:}</str>
+		</updateLog>
+
+		<commitWithin>
+			<softCommit>${solr.commitwithin.softcommit:true}</softCommit>
+		</commitWithin>
 	</updateHandler>
 
 
@@ -133,16 +104,6 @@
 	</requestDispatcher>
 
 
-	<requestHandler name="standard" class="solr.SearchHandler">
-		<lst name="defaults">
-			<str name="echoParams">explicit</str>
-		</lst>
-		<arr name="last-components">
-			<str>spellcheck</str>
-		</arr>
-	</requestHandler>
-
-
 	<requestHandler name="/select" class="solr.SearchHandler">
 		<lst name="defaults">
 			<str name="defType">edismax</str>
@@ -171,183 +132,11 @@
 
 		<arr name="last-components">
 			<str>spellcheck</str>
-			<str>elevator</str>
 		</arr>
 	</requestHandler>
-	
-	
-	<requestHandler name="/browse" class="solr.SearchHandler">
-		<lst name="defaults">
-			<str name="echoParams">explicit</str>
-
-			<!-- VelocityResponseWriter settings -->
-			<str name="wt">velocity</str>
-
-			<str name="v.template">browse</str>
-			<str name="v.layout">layout</str>
-			<str name="title">Solritas</str>
-
-			<str name="df">content</str>
-			<str name="defType">edismax</str>
-			<str name="q.alt">*:*</str>
-			<str name="rows">10</str>
-			<str name="fl">*,score</str>
-			<str name="mlt.qf">content^0.5 title^1.2 keywords^2.0</str>
-			<str name="mlt.fl">content,title,keywords</str>
-			<int name="mlt.count">3</int>
-
-			<str name="qf">content^40.0 title^5.0 keywords^2.0 tagsH1^5.0 tagsH2H3^3.0 tagsH4H5H6^2.0 tagsInline^1.0</str>
-
-			<str name="facet">on</str>
-			<str name="facet.field">type</str>
-			<str name="facet.field">site</str>
-			<str name="facet.field">author</str>
-			<str name="facet.field">keywords</str>
-			<str name="facet.field">fileMimeType</str>
-			<str name="facet.field">appKey</str>
-			<str name="facet.mincount">1</str>
-
-			<str name="spellcheck">true</str>
-			<str name="spellcheck.collate">true</str>
-
-			<!-- Highlighting defaults -->
-			<str name="hl">on</str>
-			<str name="hl.fl">title content</str>
-			<str name="f.name.hl.fragsize">0</str>
-		</lst>
-		<arr name="last-components">
-			<str>spellcheck</str>
-		</arr>
-	</requestHandler>
-
-
-	<requestHandler name="mlt" class="solr.MoreLikeThisHandler">
-		<lst name="defaults">
-			<str name="mlt.mintf">1</str>
-			<str name="mlt.mindf">1</str>
-			<str name="mlt.minwl">3</str>
-			<str name="mlt.maxwl">15</str>
-			<str name="mlt.maxqt">20</str>
-			<str name="mlt.match.include">false</str>
-		</lst>
-	</requestHandler>
-
-
-	<requestHandler name="/analysis/document" class="solr.DocumentAnalysisRequestHandler" />
-
-
-	<requestHandler name="/analysis/field" class="solr.FieldAnalysisRequestHandler" />
 
 
 	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler" />
-
-
-	<requestHandler name="/update/csv" class="solr.CSVRequestHandler" startup="lazy" />
-
-
-	<requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler" startup="lazy" />
-
-
-	<requestHandler name="/update/extract" class="org.apache.solr.handler.extraction.ExtractingRequestHandler" startup="lazy" />
-
-
-	<requestHandler name="/analysis/field" class="solr.FieldAnalysisRequestHandler" startup="lazy" />
-	
-	<requestHandler name="/analysis/document" class="solr.DocumentAnalysisRequestHandler" startup="lazy" />
-
-<!--
-	<requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">
-		<lst name="defaults">
-			<str name="config">data-config.xml</str>
-		</lst>
-	</requestHandler>
- -->
-
-
-	<requestHandler name="/terms" class="org.apache.solr.handler.component.SearchHandler" startup="lazy">
-		<lst name="defaults">
-			<bool name="terms">true</bool>
-		</lst>
-		<arr name="components">
-			<str>termsComponent</str>
-		</arr>
-	</requestHandler>
-
-
-	<requestHandler name="/elevate" class="solr.SearchHandler" startup="lazy">
-		<lst name="defaults">
-			<str name="echoParams">explicit</str>
-		</lst>
-		<arr name="last-components">
-			<str>elevator</str>
-		</arr>
-	</requestHandler>
-
-
-	<requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
-
-
-	<requestHandler name="/admin/ping" class="PingRequestHandler">
-		<lst name="invariants">
-			<str name="q">solrpingquery</str>
-		</lst>
-		<lst name="defaults">
-			<str name="echoParams">all</str>
-			<str name="df">id</str>
-		</lst>
-	</requestHandler>
-
-
-	<requestHandler name="/debug/dump" class="solr.DumpRequestHandler" >
-		<lst name="defaults">
-		<str name="echoParams">explicit</str> <!-- for all params (including the default etc) use: 'all' -->
-		<str name="echoHandler">true</str>
-		</lst>
-	</requestHandler>
-
-
-	<requestHandler name="/clustering"
-					enable="${solr.clustering.enabled:false}"
-					class="solr.SearchHandler">
-
-		<lst name="defaults">
-			<bool name="clustering">true</bool>
-			<str name="clustering.engine">default</str>
-			<bool name="clustering.results">true</bool>
-			<!-- The title field -->
-			<str name="carrot.title">name</str>
-			<str name="carrot.url">id</str>
-			<!-- The field to cluster on -->
-			<str name="carrot.snippet">features</str>
-			<!-- produce summaries -->
-			<bool name="carrot.produceSummary">true</bool>
-			<!-- the maximum number of labels per cluster -->
-			<!--<int name="carrot.numDescriptions">5</int>-->
-			<!-- produce sub clusters -->
-			<bool name="carrot.outputSubClusters">false</bool>
-		</lst>
-		<arr name="last-components">
-			<str>clusteringComponent</str>
-		</arr>
-	</requestHandler>
-
-
-	<searchComponent
-		name="clusteringComponent"
-		enable="${solr.clustering.enabled:false}"
-		class="org.apache.solr.handler.clustering.ClusteringComponent" >
-
-		<lst name="engine">
-			<str name="name">default</str>
-			<str name="carrot.algorithm">org.carrot2.clustering.lingo.LingoClusteringAlgorithm</str>
-			<str name="LingoClusteringAlgorithm.desiredClusterCountBase">20</str>
-		</lst>
-
-		<lst name="engine">
-			<str name="name">stc</str>
-			<str name="carrot.algorithm">org.carrot2.clustering.stc.STCClusteringAlgorithm</str>
-		</lst>
-	</searchComponent>
 
 
 	<searchComponent name="spellcheck" class="solr.SpellCheckComponent">
@@ -359,16 +148,6 @@
 			<str name="buildOnCommit">true</str>
 			<str name="spellcheckIndexDir">./spellchecker1</str>
 		</lst>
-	</searchComponent>
-
-
-	<searchComponent name="termsComponent" class="org.apache.solr.handler.component.TermsComponent"/>
-
-
-	<searchComponent name="elevator" class="solr.QueryElevationComponent" >
-		<str name="queryFieldType">string</str>
-		<str name="config-file">elevate.xml</str>
-		<str name="forceElevation">true</str>
 	</searchComponent>
 
 
@@ -440,15 +219,6 @@
 			</fragmentsBuilder>
 		</highlighting>
 	</searchComponent>
-
-
-	<queryResponseWriter name="php" class="org.apache.solr.response.PHPResponseWriter"/>
-	<queryResponseWriter name="phps" class="org.apache.solr.response.PHPSerializedResponseWriter"/>
-	<queryResponseWriter name="velocity" class="solr.VelocityResponseWriter" startup="lazy"/>
-	<queryResponseWriter name="xslt" class="org.apache.solr.response.XSLTResponseWriter">
-		<int name="xsltCacheLifetimeSeconds">5</int>
-	</queryResponseWriter>
-	<queryResponseWriter name="javabin" class="org.apache.solr.response.BinaryResponseWriter"/>
 
 
 	<!-- TYPO3 specific plugins, request handlers -->
