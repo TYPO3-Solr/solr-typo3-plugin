@@ -86,7 +86,6 @@ public class Rootline extends ArrayList<RootlineElement> {
         add(new RootlineElement(elementAccess));
       } catch (RootlineElementFormatException e) {
         // just ignore the faulty element for now, might log this later
-        continue;
       }
     }
   }
