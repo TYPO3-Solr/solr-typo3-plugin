@@ -64,6 +64,28 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.6</version>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactSet>
+						<includes>
+							<include>org.apache.commons:commons-lang3</include>
+						</includes>
+					</artifactSet>
+					<minimizeJar>true</minimizeJar>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+				</configuration>
+			</plugin>
 		</plugins>
 		<resources>
 		</resources>
