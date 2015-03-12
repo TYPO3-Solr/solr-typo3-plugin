@@ -56,7 +56,7 @@ public class AccessFilterTest extends TestCase {
 			getDocument("protected2_group1,2", "1,2")
 		};
 
-		IndexWriterConfig conf = new IndexWriterConfig(Version.LUCENE_4_10_3, analyzer);
+		IndexWriterConfig conf = new IndexWriterConfig(analyzer);
 		conf.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 
 		IndexWriter writer = new IndexWriter(dir, conf);

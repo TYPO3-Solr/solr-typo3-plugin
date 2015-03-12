@@ -123,9 +123,6 @@
 	</requestHandler>
 
 
-	<requestHandler name="/update" class="solr.XmlUpdateRequestHandler" />
-
-
 	<!-- TYPO3 specific plugins, request handlers -->
 	<queryParser name="typo3access" class="org.typo3.solr.search.AccessFilterQParserPlugin"/>
 

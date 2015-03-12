@@ -21,9 +21,10 @@ import java.util.HashSet;
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
+import org.apache.lucene.util.BitDocIdSet;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.OpenBitSet;
+import org.apache.lucene.util.FixedBitSet;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
 import org.typo3.access.RootlineElementType;
@@ -94,9 +95,9 @@ public class AccessFilter extends Filter {
    * @throws IOException When an error occurs while reading from the index.
    */
   @Override
-  public final DocIdSet getDocIdSet(final AtomicReaderContext context, final Bits acceptDocs) throws IOException {
-    AtomicReader reader = context.reader();
-    OpenBitSet bits = new OpenBitSet(reader.maxDoc());
+  public final DocIdSet getDocIdSet(final LeafReaderContext context, final Bits acceptDocs) throws IOException {
+    LeafReader reader = context.reader();
+    FixedBitSet bits = new FixedBitSet(reader.maxDoc());
 
     SortedDocValues values = reader.getSortedDocValues(accessField);
 
@@ -109,7 +110,7 @@ public class AccessFilter extends Filter {
       }
     }
 
-    return bits;
+    return new BitDocIdSet(bits);
   }
 
   /**
