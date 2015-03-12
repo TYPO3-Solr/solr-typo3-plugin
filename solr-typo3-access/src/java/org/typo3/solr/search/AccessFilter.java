@@ -18,7 +18,6 @@ package org.typo3.solr.search;
 
 import java.io.IOException;
 import java.util.HashSet;
-
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
@@ -99,7 +98,7 @@ public class AccessFilter extends Filter {
     AtomicReader reader = context.reader();
     OpenBitSet bits = new OpenBitSet(reader.maxDoc());
 
-    BinaryDocValues values = reader.getBinaryDocValues(accessField);
+    SortedDocValues values = reader.getSortedDocValues(accessField);
 
     for (int i = 0; i < reader.maxDoc(); i++) {
       BytesRef bytes = values.get(i);
