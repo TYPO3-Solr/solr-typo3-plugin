@@ -113,35 +113,6 @@ public class AccessFilter extends Filter {
     return bits;
   }
 
-
-/*
-
-
-  public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-    String[] access = FieldCache.DEFAULT.getStrings(reader, accessField);
-    OpenBitSet bits = new OpenBitSet(reader.maxDoc());
-
-    TermDocs td = reader.termDocs(null);
-
-    try {
-
-      while (td.next()) {
-        int docId = td.doc();
-
-        if (accessGranted(access[docId])) {
-          bits.set(docId);
-        }
-      }
-
-    } finally {
-      td.close();
-    }
-
-    return bits;
-  }
-*/
-
-
   /**
    * Checks whether access is allowed based on the document's required groups
    * and the groups the user has access to.
