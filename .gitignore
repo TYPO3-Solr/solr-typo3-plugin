@@ -3,8 +3,5 @@
 .project
 .DS_Store
 /.idea
-/.project
-/.classpath
-/.settings
 /.caches
 **/build
