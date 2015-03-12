@@ -80,7 +80,7 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
 
   @Override
   public String getVersion() {
-    return version + "-$Revision: 88365 $";
+    return version;
   }
 
   @Override
