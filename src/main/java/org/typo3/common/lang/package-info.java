@@ -1,5 +1,5 @@
 /**
- * Java language utilities, specifically String manipulation helpers
+ * Java language utilities, specifically String manipulation helpers.
  *
  */
 package org.typo3.common.lang;
