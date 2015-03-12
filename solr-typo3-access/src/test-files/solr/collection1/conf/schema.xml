@@ -15,7 +15,7 @@
 
 	<field name="id"        type="string" indexed="true" stored="true" required="true" />
 
-	<field name="access"    type="string" indexed="true" stored="true" default="c:0" docValues="true" />
 	<field name="title"     type="string" indexed="true"  stored="true" />
+	<field name="access"    type="string" indexed="false" stored="true" default="c:0" docValues="true" />
 
 </schema>
