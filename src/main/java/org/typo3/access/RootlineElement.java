@@ -55,10 +55,11 @@ public class RootlineElement {
   /**
    * Constructor.
    *
-   * @param element String representation of an element in the access rootline, usually of the form pageId:commaSeparatedPageAccessGroups
+   * @param element String representation of an element in the access rootline,
+   *                usually of the form pageId:commaSeparatedPageAccessGroups
    * @throws RootlineElementFormatException on wrong access format.
    */
-  public RootlineElement(String element) throws RootlineElementFormatException {
+  public RootlineElement(final String element) throws RootlineElementFormatException {
     String[] elementAccess = StringUtils.explode(element, pageIdGroupDelimiter);
     String elementGroups;
 
@@ -96,7 +97,7 @@ public class RootlineElement {
    *
    * @return String
    */
-  public String toString() {
+  public final String toString() {
     StringBuilder sb = new StringBuilder();
 
     if (type == RootlineElementType.CONTENT) {
@@ -118,7 +119,7 @@ public class RootlineElement {
    *
    * @return Integer Page Id.
    */
-  public Integer getId() {
+  public final Integer getId() {
     return id;
   }
 
@@ -127,7 +128,7 @@ public class RootlineElement {
    *
    * @return {@link RootlineElementType}
    */
-  public RootlineElementType getType() {
+  public final RootlineElementType getType() {
     return type;
   }
 
@@ -136,7 +137,7 @@ public class RootlineElement {
    *
    * @return HashSet<Integer>
    */
-  public HashSet<Integer> getAccessGroups() {
+  public final HashSet<Integer> getAccessGroups() {
     return accessGroups;
   }
 

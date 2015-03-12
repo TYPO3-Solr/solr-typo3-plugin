@@ -76,7 +76,7 @@ public class Rootline extends ArrayList<RootlineElement> {
    *
    * @param accessRootline Access Rootline String representation.
    */
-  public Rootline(String accessRootline) {
+  public Rootline(final String accessRootline) {
     StringTokenizer st = new StringTokenizer(accessRootline, elementDelimiter);
 
     while (st.hasMoreTokens()) {
@@ -95,7 +95,7 @@ public class Rootline extends ArrayList<RootlineElement> {
    *
    * @return String String representation of the access rootline.
    */
-  public String toString() {
+  public final String toString() {
     return StringUtils.implode(this, elementDelimiter);
   }
 

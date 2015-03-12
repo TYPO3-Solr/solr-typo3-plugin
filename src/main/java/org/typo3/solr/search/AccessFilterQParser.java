@@ -45,7 +45,7 @@ public class AccessFilterQParser extends QParser {
    * @param params GET parameters
    * @param req Solr request
    */
-  public AccessFilterQParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req) {
+  public AccessFilterQParser(final String qstr, final SolrParams localParams, final SolrParams params, final SolrQueryRequest req) {
     super(qstr, localParams, params, req);
 
     this.accessFilter = new AccessFilter(
@@ -55,7 +55,7 @@ public class AccessFilterQParser extends QParser {
   }
 
   @Override
-  public Query parse() throws SyntaxError {
+  public final Query parse() throws SyntaxError {
     return new ConstantScoreQuery(accessFilter);
   }
 

@@ -37,12 +37,12 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
   /**
    * The name of the query parser. Used in solrconfig.xml and in queries.
    */
-  public static String NAME = "typo3access";
+  public static final String NAME = "typo3access";
 
   /**
    * Query Parser Plugin Version.
    */
-  public static final String version = "1.2.0";
+  private final String version = "1.3.0";
 
   /**
    * Implementation of NamedListInitializedPlugin.init().
@@ -50,7 +50,7 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    * @param args Arguments
    * @see org.apache.solr.util.plugin.NamedListInitializedPlugin#init(org.apache.solr.common.util.NamedList)
    */
-  public void init(NamedList args) {
+  public void init(final NamedList args) {
   }
 
   /**
@@ -60,9 +60,15 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    * org.apache.solr.common.params.SolrParams,
    * org.apache.solr.common.params.SolrParams,
    * org.apache.solr.request.SolrQueryRequest)
+   *
+   * @param qstr Search term
+   * @param localParams Local parameters
+   * @param params GET parameters
+   * @param req Solr request
+   * @return QParser
    */
   @Override
-  public QParser createParser(String qstr, SolrParams localParams, SolrParams params, SolrQueryRequest req) {
+  public final QParser createParser(final String qstr, final SolrParams localParams, final SolrParams params, final SolrQueryRequest req) {
       // register plugin so that we can detect it in http://host:port/path-to-solr/admin/plugins
     req.getCore().getInfoRegistry().put(getName(), this);
 
@@ -74,37 +80,37 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
 
 
   @Override
-  public String getName() {
+  public final String getName() {
     return this.getClass().getName();
   }
 
   @Override
-  public String getVersion() {
+  public final String getVersion() {
     return version;
   }
 
   @Override
-  public String getDescription() {
+  public final String getDescription() {
     return "A filter plugin to support TYPO3 access restrictions.";
   }
 
   @Override
-  public Category getCategory() {
+  public final Category getCategory() {
     return SolrInfoMBean.Category.OTHER;
   }
 
   @Override
-  public String getSource() {
+  public final String getSource() {
     return null;
   }
 
   @Override
-  public URL[] getDocs() {
+  public final URL[] getDocs() {
     return null;
   }
 
   @Override
-  public NamedList getStatistics() {
+  public final NamedList getStatistics() {
     return new SimpleOrderedMap();
   }
 

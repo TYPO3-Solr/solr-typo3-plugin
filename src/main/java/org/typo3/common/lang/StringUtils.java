@@ -48,7 +48,7 @@ public final class StringUtils {
    * @param delim Delimiter
    * @return String[] Array of String tokens
    */
-  public static String[] explode(String str, String delim) {
+  public static String[] explode(final String str, final String delim) {
     return org.apache.commons.lang3.StringUtils.split(str, delim);
   }
 
@@ -60,8 +60,8 @@ public final class StringUtils {
    * @param glue Glue / separator string.
    * @return String collection elements concatenated with glue.
    */
-  public static String implode(Collection collection, String glue) {
-	  return org.apache.commons.lang3.StringUtils.join(collection, glue);
+  public static String implode(final Collection collection, final String glue) {
+    return org.apache.commons.lang3.StringUtils.join(collection, glue);
   }
 
   /**
@@ -70,7 +70,7 @@ public final class StringUtils {
    * @param list comma separated list of integers
    * @return  HashSet<Integer>  HashSet of the list's integers
    */
-  public static HashSet<Integer> commaSeparatedListToIntegerHashSet(String list) {
+  public static HashSet<Integer> commaSeparatedListToIntegerHashSet(final String list) {
     HashSet<Integer> integerHashSet = new HashSet<Integer>();
 
     String[] values = explode(list, ",");

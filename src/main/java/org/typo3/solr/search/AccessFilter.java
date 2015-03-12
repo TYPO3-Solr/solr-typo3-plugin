@@ -65,7 +65,7 @@ public class AccessFilter extends Filter {
    *
    * @param userGroupList Comma separated list of groups the user has access to.
    */
-  public AccessFilter(String userGroupList) {
+  public AccessFilter(final String userGroupList) {
     this("access", userGroupList);
   }
 
@@ -76,7 +76,7 @@ public class AccessFilter extends Filter {
    * @param field The field to be used for access checks.
    * @param userGroupList Comma separated list of groups the user has access to.
    */
-  public AccessFilter(String field, String userGroupList) {
+  public AccessFilter(final String field, final String userGroupList) {
     this.accessField = field;
     setUserGroupList(userGroupList);
   }
@@ -94,7 +94,7 @@ public class AccessFilter extends Filter {
    * @throws IOException When an error occurs while reading from the index.
    */
   @Override
-  public DocIdSet getDocIdSet(AtomicReaderContext context, Bits acceptDocs) throws IOException {
+  public final DocIdSet getDocIdSet(final AtomicReaderContext context, final Bits acceptDocs) throws IOException {
     AtomicReader reader = context.reader();
     OpenBitSet bits = new OpenBitSet(reader.maxDoc());
 
@@ -116,21 +116,24 @@ public class AccessFilter extends Filter {
    * Checks whether access is allowed based on the document's required groups
    * and the groups the user has access to.
    *
-   * @param documentGroupList Comma separated list of groups required to access a document
+   * @param documentGroupList Comma separated list of groups required to access
+   *                          a document
    * @return boolean TRUE if access is granted, FALSE otherwise
    */
-  private boolean accessGranted(String documentGroupList) {
+  private boolean accessGranted(final String documentGroupList) {
     Boolean accessGranted = false;
     Rootline accessRootline = new Rootline(documentGroupList);
 
     for (RootlineElement element : accessRootline) {
       if (element.getType() == RootlineElementType.PAGE) {
-        // for a page the user must have access to at least one access group set for the page
+        // for a page the user must have access to
+        // at least one access group set for the page
         accessGranted = accessGrantedForPage(element.getAccessGroups());
       } else if (element.getType() == RootlineElementType.RECORD) {
         accessGranted = accessGrantedForRecord(element.getAccessGroups());
       } else {
-        // for content the user must have access to all access groups set for the content
+        // for content the user must have access to
+        // all access groups set for the content
         accessGranted = userGroupSet.containsAll(element.getAccessGroups());
       }
 
@@ -151,7 +154,7 @@ public class AccessFilter extends Filter {
    * @param pageElementAccess Access groups set for a page.
    * @return Boolean True if the user has access to the page, false otherwise.
    */
-  private Boolean accessGrantedForPage(HashSet<Integer> pageElementAccess) {
+  private Boolean accessGrantedForPage(final HashSet<Integer> pageElementAccess) {
     Boolean accessGranted = false;
 
     for (Integer userGroup : userGroupSet) {
@@ -173,7 +176,7 @@ public class AccessFilter extends Filter {
    * @param recordElementAccess Access groups set for a record.
    * @return Boolean True if the user has access to the record, false otherwise.
    */
-  private Boolean accessGrantedForRecord(HashSet<Integer> recordElementAccess) {
+  private Boolean accessGrantedForRecord(final HashSet<Integer> recordElementAccess) {
     Boolean accessGranted = false;
 
     for (Integer userGroup : userGroupSet) {
@@ -196,7 +199,7 @@ public class AccessFilter extends Filter {
    *
    * @param userGroupList comma separated list of user group Ids
    */
-  private void setUserGroupList(String userGroupList) {
+  private void setUserGroupList(final String userGroupList) {
     this.userGroupSet = StringUtils.commaSeparatedListToIntegerHashSet(userGroupList);
   }
 
