@@ -26,5 +26,3 @@ $SOLR_HOME/lib directory and then add the following to your solrconfig.xml file:
 
 Restart your servlet container.
 
-The solr-typo3-access.jar depends on the commons-lang3.jar. Please download this jar from http://commons.apache.org/lang/ and
-copy it into your $SOLR_HOME/lib directory.
