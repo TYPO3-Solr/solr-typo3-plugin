@@ -21,8 +21,7 @@ http://localhost:8983/path/to/solr/select/?fq={!typo3access field=fieldname}perm
 http://localhost:8983/solr/collection1/select/?q=title:Hello&fq={!typo3access}0,1,4,10
 ```
 
-* The **field** parameter is optional and defaults to "access"
-* **fieldname** is the name of the string field holding the access restrictions for a document
+* The **field** parameter is optional and defaults to "access", it is the name of the string field holding the access restrictions for a document
 * **permittedUserGroups** is a comma separated list of groups the user is granted access to
 
 
