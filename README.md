@@ -1,5 +1,5 @@
 
-![Travis Build Status](https://travis-ci.org/TYPO3-Solr/solr-typo3-plugin.svg?branch=master)
+[![Travis Build Status](https://travis-ci.org/TYPO3-Solr/solr-typo3-plugin.svg?branch=master)](https://travis-ci.org/TYPO3-Solr/solr-typo3-plugin/builds)
 
 # Solr TYPO3 Plugin
 
