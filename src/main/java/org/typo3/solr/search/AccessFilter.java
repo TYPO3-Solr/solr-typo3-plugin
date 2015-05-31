@@ -204,4 +204,9 @@ public class AccessFilter extends Filter {
     this.userGroupSet = StringUtils.commaSeparatedListToIntegerHashSet(userGroupList);
   }
 
+  @Override
+   public String toString(String field) {
+    return getClass().getName() + " - " + this.accessField + ": " + StringUtils.implode(this.userGroupSet, ",");
+  }
+
 }
