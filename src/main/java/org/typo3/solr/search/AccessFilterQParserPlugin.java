@@ -42,7 +42,7 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
   /**
    * Query Parser Plugin Version.
    */
-  private static final String version = "1.5.0";
+  private static final String version = "1.6.0";
 
   /**
    * Implementation of NamedListInitializedPlugin.init().
