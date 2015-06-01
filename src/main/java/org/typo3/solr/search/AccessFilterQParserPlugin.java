@@ -51,7 +51,7 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    * @see org.apache.solr.util.plugin.NamedListInitializedPlugin#init(org.apache.solr.common.util.NamedList)
    */
   public void init(final NamedList args) {
-    this.version = getClass().getPackage().getImplementationVersion();
+    version = getClass().getPackage().getImplementationVersion();
   }
 
   /**
