@@ -42,7 +42,7 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
   /**
    * Query Parser Plugin Version.
    */
-  private static final String version = "1.6.0";
+  private static String version = null;
 
   /**
    * Implementation of NamedListInitializedPlugin.init().
@@ -51,6 +51,7 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    * @see org.apache.solr.util.plugin.NamedListInitializedPlugin#init(org.apache.solr.common.util.NamedList)
    */
   public void init(final NamedList args) {
+    this.version = getClass().getPackage().getImplementationVersion();
   }
 
   /**
