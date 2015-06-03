@@ -32,7 +32,7 @@ import org.apache.solr.search.QParserPlugin;
 /**
  * A query parser plugin to add a TYPO3 access filter to search queries.
  *
- * @author Ingo Renner <ingo@typo3.org> *
+ * @author Ingo Renner <ingo@typo3.org>
  */
 public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfoMBean {
 
