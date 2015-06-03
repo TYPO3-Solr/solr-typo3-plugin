@@ -16,7 +16,9 @@
 
 package org.typo3.solr.search;
 
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
@@ -51,7 +53,16 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    * @see org.apache.solr.util.plugin.NamedListInitializedPlugin#init(org.apache.solr.common.util.NamedList)
    */
   public void init(final NamedList args) {
-    version = getClass().getPackage().getImplementationVersion();
+    try {
+      Properties p = new Properties();
+      InputStream is = getClass().getResourceAsStream("plugin.properties");
+      if (is != null) {
+        p.load(is);
+        version = p.getProperty("version");
+      }
+    } catch (Exception e) {
+      System.out.println("BOOO! " + e.toString());
+    }
   }
 
   /**
