@@ -9,8 +9,8 @@
     <description>A plugin for Solr to implement TYPO3 support functionality.</description>
     <url>http://www.typo3-solr.com</url>
     <issueManagement>
-        <system>TYPO3 Forge (Redmine)</system>
-        <url>http://forge.typo3.org/projects/extension-solr/issues</url>
+        <system>Apache Solr for TYPO3 - GitHub</system>
+        <url>https://github.com/TYPO3-Solr/solr-typo3-plugin/issues</url>
     </issueManagement>
     <licenses>
         <license>
