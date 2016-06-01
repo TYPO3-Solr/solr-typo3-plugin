@@ -19,12 +19,12 @@ package org.typo3.solr.search;
 import java.io.IOException;
 import java.util.HashSet;
 import org.apache.lucene.index.*;
-import org.apache.lucene.search.DocIdSet;
-import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.*;
 import org.apache.lucene.util.BitDocIdSet;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
+import org.apache.solr.search.Filter;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
 import org.typo3.access.RootlineElementType;
@@ -81,10 +81,6 @@ public class AccessFilter extends Filter {
     this.accessField = field;
     setUserGroupList(userGroupList);
   }
-
-
-  // filter
-
 
   /**
    * Filters the documents based on the access granted.
@@ -207,6 +203,16 @@ public class AccessFilter extends Filter {
   @Override
    public String toString(String field) {
     return getClass().getName() + " - " + this.accessField + ": " + StringUtils.implode(this.userGroupSet, ",");
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return 0;
   }
 
 }

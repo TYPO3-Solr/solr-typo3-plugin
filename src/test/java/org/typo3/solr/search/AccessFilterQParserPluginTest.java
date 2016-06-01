@@ -32,7 +32,7 @@ import org.noggit.ObjectBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.solr.core.ConfigOverlay.getObjectByPath;
+import static org.apache.solr.common.util.Utils.getObjectByPath;
 
 public class AccessFilterQParserPluginTest extends RestTestBase {
 
