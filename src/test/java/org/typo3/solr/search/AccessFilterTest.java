@@ -21,22 +21,17 @@ import junit.framework.TestCase;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.index.*;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.util.QueryBuilder;
+
+import java.util.List;
 
 
-public class AccessFilterTest extends TestCase {
+public class AccessFilterTest extends AbstractAccessTestCase {
 
 	private Directory dir;
 	private IndexReader reader;
@@ -86,16 +81,18 @@ public class AccessFilterTest extends TestCase {
 	}
 
 	public void testAccessFilterFindsOnlyPublicDocumentsWhenNotLoggedIn() throws Exception {
-		Filter filter = new AccessFilter();
+		AccessFilter filter = new AccessFilter();
+		Query query = getBooleanQueryFromSearchQueryAndFilter(allDocs, filter);
+		TopDocs hits = searcher.search(query, 10);
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
 		assertEquals("returns only public documents", 2, hits.totalHits);
 	}
 
 	public void testAccessFilterFindsDocumentsAllowedForGroup1() throws Exception {
-		Filter filter = new AccessFilter("0,1");
+		AccessFilter filter = new AccessFilter("0,1");
+		Query query = getBooleanQueryFromSearchQueryAndFilter(allDocs, filter);
+		TopDocs hits = searcher.search(query, 10);
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
 		assertEquals("returns public documents and for group 1", 3, hits.totalHits);
 		assertEquals("allows access for document 'protected1_group1'",
 			"protected1_group1",
@@ -104,17 +101,18 @@ public class AccessFilterTest extends TestCase {
 	}
 
 	public void testAccessFilterFindsDocumentsRequiringAccessForGroup1And2() throws Exception {
-		Filter filter = new AccessFilter("0,1,2");
+		AccessFilter filter = new AccessFilter("0,1,2");
+		Query query = getBooleanQueryFromSearchQueryAndFilter(allDocs, filter);
+		TopDocs hits = searcher.search(query, 10);
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
 		assertEquals("returns public documents and for group 1 and group 2", 4, hits.totalHits);
 	}
 
 	public void testAccessFilterFiltersDocumentsWithInsufficientAccess() throws Exception {
-		Filter filter = new AccessFilter("0,2");
+		AccessFilter filter = new AccessFilter("0,2");
+		Query query = getBooleanQueryFromSearchQueryAndFilter(allDocs, filter);
+		TopDocs hits = searcher.search(query, 10);
 
-		TopDocs hits = searcher.search(allDocs, filter, 10);
 		assertEquals("returns accessible documents", 2, hits.totalHits);
 	}
-
 }

@@ -11,7 +11,6 @@
 	<luceneMatchVersion>${tests.luceneMatchVersion:LUCENE_CURRENT}</luceneMatchVersion>
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
-
 	<indexConfig>
 		<!-- this sys property is not set by SolrTestCaseJ4 because we ideally want to use
                the RandomMergePolicy in all tests - but some tests expect very specific
@@ -22,11 +21,10 @@
 		<useCompoundFile>${useCompoundFile:false}</useCompoundFile>
 
 		<maxBufferedDocs>${solr.tests.maxBufferedDocs}</maxBufferedDocs>
-		<maxIndexingThreads>${solr.tests.maxIndexingThreads}</maxIndexingThreads>
+		<maxIndexingThreads>${solr.tests.maxIndexingThreads:5}</maxIndexingThreads>
 		<ramBufferSizeMB>${solr.tests.ramBufferSizeMB}</ramBufferSizeMB>
 
 		<mergeScheduler class="${solr.tests.mergeScheduler}" />
-		<nrtMode>${solr.tests.nrtMode:true}</nrtMode>
 
 		<writeLockTimeout>1000</writeLockTimeout>
 		<commitLockTimeout>10000</commitLockTimeout>

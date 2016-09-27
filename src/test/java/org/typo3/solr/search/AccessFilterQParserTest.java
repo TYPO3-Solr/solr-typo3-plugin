@@ -17,6 +17,8 @@
 package org.typo3.solr.search;
 
 import org.apache.solr.SolrTestCaseJ4;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -30,10 +32,16 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 
 	// setUp and tearDown
 
-	@BeforeClass
-	public static void beforeClass() throws Exception {
+	@Before
+	public void before() throws Exception {
 		initCore("solrconfig.xml", "schema.xml");
 		createIndex();
+	}
+
+
+	@After
+	public void after() throws Exception {
+		deleteCore();
 	}
 
 	private static void createIndex() {
