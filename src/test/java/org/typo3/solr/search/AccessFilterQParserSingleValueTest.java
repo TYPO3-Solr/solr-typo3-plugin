@@ -28,7 +28,7 @@ import org.junit.Test;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-public class AccessFilterQParserTest extends SolrTestCaseJ4 {
+public class AccessFilterQParserSingleValueTest extends SolrTestCaseJ4 {
 
 	// setUp and tearDown
 
@@ -64,7 +64,7 @@ public class AccessFilterQParserTest extends SolrTestCaseJ4 {
 					"q", "*:*",
 					"qt", "/select",
 					"fq", "{!typo3access}0"
-				),
+			),
 			"//result[@numFound=2]",
 			"//str[@name='id'][.='public1']",
 			"//str[@name='id'][.='public2']"
