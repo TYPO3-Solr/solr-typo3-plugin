@@ -18,12 +18,15 @@ package org.typo3.solr.search;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
+
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
 import org.apache.lucene.util.BitDocIdSet;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
+import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.search.Filter;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
@@ -79,6 +82,7 @@ public class AccessFilter extends Filter {
    */
   public AccessFilter(final String field, final String userGroupList) {
     this.accessField = field;
+
     setUserGroupList(userGroupList);
   }
 
@@ -95,18 +99,64 @@ public class AccessFilter extends Filter {
     LeafReader reader = context.reader();
     FixedBitSet bits = new FixedBitSet(reader.maxDoc());
 
-    SortedDocValues values = reader.getSortedDocValues(accessField);
+    DocValuesType type = reader.getFieldInfos().fieldInfo(accessField).getDocValuesType();
+    Boolean isMultivalue = type.equals(DocValuesType.SORTED_SET);
 
-    for (int i = 0; i < reader.maxDoc(); i++) {
-      BytesRef bytes = values.get(i);
-      String documentGroupList = bytes.utf8ToString();
-
-      if (accessGranted(documentGroupList)) {
-        bits.set(i);
-      }
+    if(isMultivalue) {
+      handleMultivalueAccessField(reader, bits);
+    } else {
+      handleSingleValueAccessField(reader, bits);
     }
 
     return new BitDocIdSet(bits);
+  }
+
+  /**
+   * This method iterates over the documents and marks documents as accessable that are granted
+   * and have the access information in a single value field.
+   *
+   * @param reader
+   * @param bits
+   * @throws IOException
+     */
+  private void handleSingleValueAccessField(LeafReader reader, FixedBitSet bits) throws IOException {
+    SortedDocValues values = reader.getSortedDocValues(accessField);
+
+    for (int documentPointer = 0; documentPointer < reader.maxDoc(); documentPointer++) {
+      BytesRef bytes = values.get(documentPointer);
+      String documentGroupList = bytes.utf8ToString();
+
+      if (accessGranted(documentGroupList)) {
+        bits.set(documentPointer);
+      }
+    }
+  }
+
+  /**
+   * This method iterates over the documents and marks documents as accessable that are granted
+   * and have the access information in a single value field.
+   *
+   * @param reader
+   * @param bits
+   * @throws IOException
+     */
+  private void handleMultivalueAccessField(LeafReader reader, FixedBitSet bits) throws IOException {
+    SortedSetDocValues multiValueSet = reader.getSortedSetDocValues(accessField);
+    long ord;
+
+    for (int documentPointer = 0; documentPointer < reader.maxDoc(); documentPointer++) {
+      // set the relevant document for the SortedSetDocValues
+      multiValueSet.setDocument(documentPointer);
+
+      while ((ord = multiValueSet.nextOrd()) != SortedSetDocValues.NO_MORE_ORDS) {
+        BytesRef bytes = multiValueSet.lookupOrd(ord);
+        String documentGroupList = bytes.utf8ToString();
+
+        if (accessGranted(documentGroupList)) {
+          bits.set(documentPointer);
+        }
+      }
+    }
   }
 
   /**

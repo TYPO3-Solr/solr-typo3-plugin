@@ -17,5 +17,6 @@
 
 	<field name="title"     type="string" indexed="true"  stored="true" />
 	<field name="access"    type="string" indexed="false" stored="true" default="c:0" docValues="true" />
+	<field name="accesses"  type="string" indexed="false" stored="true" default="c:0" docValues="true" multiValued="true" />
 
 </schema>
