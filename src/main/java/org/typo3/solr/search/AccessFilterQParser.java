@@ -56,6 +56,6 @@ public class AccessFilterQParser extends QParser {
 
   @Override
   public final Query parse() throws SyntaxError {
-    return new AccessFilter();
+    return accessFilter;
   }
 }
