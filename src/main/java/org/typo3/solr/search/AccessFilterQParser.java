@@ -56,7 +56,6 @@ public class AccessFilterQParser extends QParser {
 
   @Override
   public final Query parse() throws SyntaxError {
-    return new ConstantScoreQuery(accessFilter);
+    return new AccessFilter();
   }
-
 }

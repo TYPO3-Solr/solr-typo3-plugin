@@ -28,7 +28,12 @@ import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
 import org.typo3.access.RootlineElementType;
 import org.typo3.common.lang.StringUtils;
-
+import org.apache.solr.search.ExtendedQueryBase;
+import org.apache.solr.search.PostFilter;
+import org.apache.solr.search.DelegatingCollector;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Weight;
 
 /**
  * A filter to make sure a user can only see documents indexed by TYPO3 he's
@@ -36,7 +41,7 @@ import org.typo3.common.lang.StringUtils;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-public class AccessFilter extends Filter {
+public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
   /**
    * HashSet representation of userGroupList.
@@ -58,6 +63,16 @@ public class AccessFilter extends Filter {
    */
   public AccessFilter() {
     this("0");
+  }
+
+  @Override
+  public boolean getCache() {
+    return false;  // never cache
+  }
+
+  @Override
+  public int getCost() {
+    return 100;  // never return less than 100 since we only support post filtering
   }
 
   /**
@@ -84,32 +99,33 @@ public class AccessFilter extends Filter {
 
   // filter
 
-
-  /**
-   * Filters the documents based on the access granted.
-   *
-   * @param context @inheritDoc
-   * @param acceptDocs @inheritDoc
-   * @return OpenBitSet
-   * @throws IOException When an error occurs while reading from the index.
-   */
   @Override
-  public final DocIdSet getDocIdSet(final AtomicReaderContext context, final Bits acceptDocs) throws IOException {
-    AtomicReader reader = context.reader();
-    OpenBitSet bits = new OpenBitSet(reader.maxDoc());
+  public DelegatingCollector getFilterCollector(IndexSearcher searcher) {
+    return new DelegatingCollector() {
+      SortedDocValues acls;
 
-    SortedDocValues values = reader.getSortedDocValues(accessField);
-
-    for (int i = 0; i < reader.maxDoc(); i++) {
-      BytesRef bytes = values.get(i);
-      String documentGroupList = bytes.utf8ToString();
-
-      if (accessGranted(documentGroupList)) {
-        bits.set(i);
+      public void setNextReader(AtomicReaderContext context) throws IOException {
+        acls = context.reader().getSortedDocValues(accessField);
+        super.setNextReader(context);
       }
-    }
 
-    return bits;
+      @Override
+      public void collect(int doc) throws IOException {
+        if (handleSingleValueAccessField(doc, acls)) super.collect(doc);
+      }
+    };
+  }
+
+  private boolean handleSingleValueAccessField(int doc, SortedDocValues values) throws IOException {
+
+    BytesRef bytes = values.get(doc);
+    String documentGroupList = bytes.utf8ToString();
+
+    if (accessGranted(documentGroupList)) 
+      return true;
+    
+    return false;
+
   }
 
   /**
