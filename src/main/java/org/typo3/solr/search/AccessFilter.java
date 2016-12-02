@@ -32,8 +32,6 @@ import org.apache.solr.search.ExtendedQueryBase;
 import org.apache.solr.search.PostFilter;
 import org.apache.solr.search.DelegatingCollector;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Weight;
 
 /**
  * A filter to make sure a user can only see documents indexed by TYPO3 he's
