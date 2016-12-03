@@ -217,4 +217,26 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
     this.userGroupSet = StringUtils.commaSeparatedListToIntegerHashSet(userGroupList);
   }
 
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + (userGroupSet != null ? userGroupSet.hashCode() : 0);
+    result = 31 * result + (accessField != null ? accessField.hashCode() : 0);
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    AccessFilter that = (AccessFilter) o;
+
+    if (!this.userGroupSet.equals(that.userGroupSet)) return false;
+    if (!this.accessField.equals(that.accessField)) return false;
+
+    return true;
+  }
+
 }
