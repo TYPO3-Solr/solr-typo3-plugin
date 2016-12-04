@@ -70,7 +70,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
   @Override
   public int getCost() {
-    return 100;  // never return less than 100 since we only support post filtering
+    return Math.max(super.getCost(), 100); // Cost must be atleast 100, to ensure we run as a post-filter.
   }
 
   /**
