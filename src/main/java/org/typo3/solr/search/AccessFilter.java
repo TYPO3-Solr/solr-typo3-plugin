@@ -148,7 +148,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
       SortedSetDocValues aclsSet;
       boolean isMultivalue;
 
-      public void doSNextReader(LeafReaderContext context) throws IOException {
+      public void doSetNextReader(LeafReaderContext context) throws IOException {
 	DocValuesType type = context.reader().getFieldInfos().fieldInfo(accessField).getDocValuesType();
 	isMultivalue = type.equals(DocValuesType.SORTED_SET);
 
