@@ -32,7 +32,10 @@ import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
 import org.typo3.access.RootlineElementType;
 import org.typo3.common.lang.StringUtils;
-
+import org.apache.solr.search.ExtendedQueryBase;
+import org.apache.solr.search.PostFilter;
+import org.apache.solr.search.DelegatingCollector;
+import org.apache.lucene.search.IndexSearcher;
 
 /**
  * A filter to make sure a user can only see documents indexed by TYPO3 he's
@@ -40,7 +43,7 @@ import org.typo3.common.lang.StringUtils;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-public class AccessFilter extends Filter {
+public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
   /**
    * HashSet representation of userGroupList.
@@ -62,6 +65,16 @@ public class AccessFilter extends Filter {
    */
   public AccessFilter() {
     this("0");
+  }
+
+  @Override
+  public boolean getCache() {
+    return false;  // never cache
+  }
+
+  @Override
+  public int getCost() {
+    return Math.max(super.getCost(), 100); // Cost must be atleast 100, to ensure we run as a post-filter.
   }
 
   /**
@@ -87,76 +100,72 @@ public class AccessFilter extends Filter {
   }
 
   /**
-   * Filters the documents based on the access granted.
+   * This method iterates over the documents and marks documents as accessable that are granted
+   * and have the access information in a single value field.
    *
-   * @param context @inheritDoc
-   * @param acceptDocs @inheritDoc
-   * @return OpenBitSet
-   * @throws IOException When an error occurs while reading from the index.
-   */
-  @Override
-  public final DocIdSet getDocIdSet(final LeafReaderContext context, final Bits acceptDocs) throws IOException {
-    LeafReader reader = context.reader();
-    FixedBitSet bits = new FixedBitSet(reader.maxDoc());
+   * @param reader
+   * @param SortedDocValues
+   * @throws IOException
+     */
 
-    DocValuesType type = reader.getFieldInfos().fieldInfo(accessField).getDocValuesType();
-    Boolean isMultivalue = type.equals(DocValuesType.SORTED_SET);
+  private boolean handleSingleValueAccessField(int doc, SortedDocValues values) throws IOException {
 
-    if(isMultivalue) {
-      handleMultivalueAccessField(reader, bits);
-    } else {
-      handleSingleValueAccessField(reader, bits);
-    }
+    BytesRef bytes = values.get(doc);
+    String documentGroupList = bytes.utf8ToString();
 
-    return new BitDocIdSet(bits);
+    if (accessGranted(documentGroupList)) 
+      return true;
+    
+    return false;
   }
+
 
   /**
    * This method iterates over the documents and marks documents as accessable that are granted
    * and have the access information in a single value field.
    *
-   * @param reader
-   * @param bits
+   * @param doc
+   * @param SortedSetDocValues
    * @throws IOException
      */
-  private void handleSingleValueAccessField(LeafReader reader, FixedBitSet bits) throws IOException {
-    SortedDocValues values = reader.getSortedDocValues(accessField);
-
-    for (int documentPointer = 0; documentPointer < reader.maxDoc(); documentPointer++) {
-      BytesRef bytes = values.get(documentPointer);
-      String documentGroupList = bytes.utf8ToString();
-
-      if (accessGranted(documentGroupList)) {
-        bits.set(documentPointer);
-      }
-    }
-  }
-
-  /**
-   * This method iterates over the documents and marks documents as accessable that are granted
-   * and have the access information in a single value field.
-   *
-   * @param reader
-   * @param bits
-   * @throws IOException
-     */
-  private void handleMultivalueAccessField(LeafReader reader, FixedBitSet bits) throws IOException {
-    SortedSetDocValues multiValueSet = reader.getSortedSetDocValues(accessField);
+  private boolean handleMultivalueAccessField(int doc, SortedSetDocValues multiValueSet) throws IOException {
     long ord;
 
-    for (int documentPointer = 0; documentPointer < reader.maxDoc(); documentPointer++) {
-      // set the relevant document for the SortedSetDocValues
-      multiValueSet.setDocument(documentPointer);
+    while ((ord = multiValueSet.nextOrd()) != SortedSetDocValues.NO_MORE_ORDS) {
+      BytesRef bytes = multiValueSet.lookupOrd(ord);
+      String documentGroupList = bytes.utf8ToString();
 
-      while ((ord = multiValueSet.nextOrd()) != SortedSetDocValues.NO_MORE_ORDS) {
-        BytesRef bytes = multiValueSet.lookupOrd(ord);
-        String documentGroupList = bytes.utf8ToString();
-
-        if (accessGranted(documentGroupList)) {
-          bits.set(documentPointer);
-        }
-      }
+      if (accessGranted(documentGroupList))
+	return true;
     }
+    return false;
+  }
+
+  @Override
+  public DelegatingCollector getFilterCollector(IndexSearcher searcher) {
+    return new DelegatingCollector() {
+      SortedDocValues acls;
+      SortedSetDocValues aclsSet;
+      boolean isMultivalue;
+
+      public void doSNextReader(LeafReaderContext context) throws IOException {
+	DocValuesType type = context.reader().getFieldInfos().fieldInfo(accessField).getDocValuesType();
+	isMultivalue = type.equals(DocValuesType.SORTED_SET);
+
+	if(isMultivalue) {
+	  aclsSet = context.reader().getSortedSetDocValues(accessField);
+	} else {
+          acls = context.reader().getSortedDocValues(accessField);
+	}
+        super.doSetNextReader(context);
+      }
+
+      @Override
+      public void collect(int doc) throws IOException {
+	if (isMultivalue && handleMultivalueAccessField(doc, aclsSet)) super.collect(doc);
+        if (handleSingleValueAccessField(doc, acls)) super.collect(doc);
+      }
+    };
   }
 
   /**
@@ -251,18 +260,30 @@ public class AccessFilter extends Filter {
   }
 
   @Override
-   public String toString(String field) {
+  public String toString(String field) {
     return getClass().getName() + " - " + this.accessField + ": " + StringUtils.implode(this.userGroupSet, ",");
   }
 
   @Override
-  public boolean equals(Object o) {
-    return false;
+  public int hashCode() {
+    int result = 0;
+    result = 31 * result + (userGroupSet != null ? userGroupSet.hashCode() : 0);
+    result = 31 * result + (accessField != null ? accessField.hashCode() : 0);
+    return result;
   }
 
+
   @Override
-  public int hashCode() {
-    return 0;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    AccessFilter that = (AccessFilter) o;
+
+    if (!this.userGroupSet.equals(that.userGroupSet)) return false;
+    if (!this.accessField.equals(that.accessField)) return false;
+
+    return true;
   }
 
 }
