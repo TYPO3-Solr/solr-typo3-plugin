@@ -130,6 +130,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
      */
   private boolean handleMultivalueAccessField(int doc, SortedSetDocValues multiValueSet) throws IOException {
     long ord;
+    multiValueSet.setDocument(doc);
 
     while ((ord = multiValueSet.nextOrd()) != SortedSetDocValues.NO_MORE_ORDS) {
       BytesRef bytes = multiValueSet.lookupOrd(ord);
