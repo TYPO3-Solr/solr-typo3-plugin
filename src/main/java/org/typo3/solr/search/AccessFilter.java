@@ -188,8 +188,13 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
       @Override
       public void collect(int doc) throws IOException {
-	if (isMultivalue && handleMultivalueAccessField(doc, aclsSet)) super.collect(doc);
-        if (handleSingleValueAccessField(doc, acls)) super.collect(doc);
+	if (isMultivalue && handleMultivalueAccessField(doc, aclsSet)) {
+	  super.collect(doc);
+	}
+
+        if (!isMultivalue && handleSingleValueAccessField(doc, acls)) { 
+	  super.collect(doc);
+	}
       }
     };
   }
