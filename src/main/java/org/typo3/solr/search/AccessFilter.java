@@ -103,8 +103,8 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
    * This method iterates over the documents and marks documents as accessable that are granted
    * and have the access information in a single value field.
    *
-   * @param reader
-   * @param SortedDocValues
+   * @param doc
+   * @param values
    * @throws IOException
      */
 
@@ -113,9 +113,9 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
     BytesRef bytes = values.get(doc);
     String documentGroupList = bytes.utf8ToString();
 
-    if (accessGranted(documentGroupList)) 
+    if (accessGranted(documentGroupList)) {
       return true;
-    
+    }
     return false;
   }
 
@@ -125,7 +125,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
    * and have the access information in a single value field.
    *
    * @param doc
-   * @param SortedSetDocValues
+   * @param multiValueSet
    * @throws IOException
      */
   private boolean handleMultivalueAccessField(int doc, SortedSetDocValues multiValueSet) throws IOException {
@@ -136,11 +136,19 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
       BytesRef bytes = multiValueSet.lookupOrd(ord);
       String documentGroupList = bytes.utf8ToString();
 
-      if (accessGranted(documentGroupList))
+      if (accessGranted(documentGroupList)) {
 	return true;
+      }
     }
     return false;
   }
+
+  /**
+   * A modified delegating collector that runs after queries and filters
+   * but before sorting and grouping collectors, see Lucene's PostFilter interface.
+   *
+   * @param searcher
+   */
 
   @Override
   public DelegatingCollector getFilterCollector(IndexSearcher searcher) {
@@ -148,6 +156,14 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
       SortedDocValues acls;
       SortedSetDocValues aclsSet;
       boolean isMultivalue;
+
+      /**
+       * This method is run whenever we reach the a new index segment, when
+       * this happens we need to load a new set of DocValues.
+       *
+       * @param context
+       * @throws IOException
+       */
 
       public void doSetNextReader(LeafReaderContext context) throws IOException {
 	DocValuesType type = context.reader().getFieldInfos().fieldInfo(accessField).getDocValuesType();
@@ -160,6 +176,15 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 	}
         super.doSetNextReader(context);
       }
+
+      /**
+       * Called for each document that need to be considered, if we do 
+       * not call super.collect, the document will effectively be filtered here.
+       * 
+       *
+       * @param doc
+       * @throws IOException
+       */
 
       @Override
       public void collect(int doc) throws IOException {
@@ -276,13 +301,22 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
 
     AccessFilter that = (AccessFilter) o;
 
-    if (!this.userGroupSet.equals(that.userGroupSet)) return false;
-    if (!this.accessField.equals(that.accessField)) return false;
+    if (!this.userGroupSet.equals(that.userGroupSet)) {
+      return false;
+    }
+    if (!this.accessField.equals(that.accessField)) {
+      return false;
+    }
 
     return true;
   }
