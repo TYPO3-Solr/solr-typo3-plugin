@@ -106,6 +106,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
    * @param doc
    * @param values
    * @throws IOException
+   * @return boolean TRUE if access is granted, otherwise FALSE
      */
 
   private boolean handleSingleValueAccessField(int doc, SortedDocValues values) throws IOException {
@@ -127,6 +128,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
    * @param doc
    * @param multiValueSet
    * @throws IOException
+   * @return boolean TRUE if access is granted, otherwise FALSE
      */
   private boolean handleMultivalueAccessField(int doc, SortedSetDocValues multiValueSet) throws IOException {
     long ord;
@@ -145,9 +147,10 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
   /**
    * A modified delegating collector that runs after queries and filters
-   * but before sorting and grouping collectors, see Lucene's PostFilter interface.
+   * but before sorting and grouping collectors, see the SOLR PostFilter interface.
    *
    * @param searcher
+   * @return A delegating collector that can be called by SOLR for PostFilter processing.
    */
 
   @Override
