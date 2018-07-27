@@ -79,9 +79,9 @@ public class AccessFilterQParserPluginTest extends RestTestBase {
         if (objectInfo instanceof LinkedHashMap) {
             @SuppressWarnings("unchecked")
             LinkedHashMap<String, String> pluginInfo = (LinkedHashMap<String, String>) objectInfo;
-            String version = pluginInfo.get("version");
-
-            assertTrue(version.startsWith("2."));
+            String description = pluginInfo.get("description");
+            String version = description.substring(description.indexOf("Version: ") + 9, description.indexOf(")"));
+            assertTrue(version.startsWith("3."));
         } else {
             fail();
         }

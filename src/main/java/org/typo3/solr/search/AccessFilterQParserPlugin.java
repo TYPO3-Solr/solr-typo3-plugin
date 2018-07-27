@@ -20,10 +20,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import com.codahale.metrics.Metric;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.apache.solr.common.util.SimpleOrderedMap;
-import org.apache.solr.core.SolrInfoMBean;
+import org.apache.solr.core.SolrInfoBean;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QParserPlugin;
@@ -34,7 +35,7 @@ import org.apache.solr.search.QParserPlugin;
  *
  * @author Ingo Renner <ingo@typo3.org>
  */
-public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfoMBean {
+public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfoBean {
 
   /**
    * The name of the query parser. Used in solrconfig.xml and in queries.
@@ -54,11 +55,13 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    */
   public void init(final NamedList args) {
     try {
+
       Properties p = new Properties();
       InputStream is = getClass().getResourceAsStream("plugin.properties");
       if (is != null) {
         p.load(is);
         version = p.getProperty("version");
+
       }
     } catch (Exception e) {
       System.out.println("BOOO! " + e.toString());
@@ -90,40 +93,19 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
 
   // SolrInfoMBean
 
-
   @Override
   public final String getName() {
     return this.getClass().getName();
   }
 
   @Override
-  public final String getVersion() {
-    return version;
-  }
-
-  @Override
   public final String getDescription() {
-    return "A filter plugin to support TYPO3 access restrictions.";
+    return "A filter plugin to support TYPO3 access restrictions. (Version: "+version+")";
   }
 
   @Override
   public final Category getCategory() {
-    return SolrInfoMBean.Category.OTHER;
-  }
-
-  @Override
-  public final String getSource() {
-    return null;
-  }
-
-  @Override
-  public final URL[] getDocs() {
-    return null;
-  }
-
-  @Override
-  public final NamedList getStatistics() {
-    return new SimpleOrderedMap();
+    return SolrInfoBean.Category.OTHER;
   }
 
 }

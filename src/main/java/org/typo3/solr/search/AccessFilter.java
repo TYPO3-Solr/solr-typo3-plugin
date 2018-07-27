@@ -111,7 +111,8 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
   private boolean handleSingleValueAccessField(int doc, SortedDocValues values) throws IOException {
 
-    BytesRef bytes = values.get(doc);
+    values.advance(doc);
+    BytesRef bytes = values.binaryValue();
     String documentGroupList = bytes.utf8ToString();
 
     if (accessGranted(documentGroupList)) {
@@ -132,14 +133,14 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
      */
   private boolean handleMultivalueAccessField(int doc, SortedSetDocValues multiValueSet) throws IOException {
     long ord;
-    multiValueSet.setDocument(doc);
+    multiValueSet.advance(doc);
 
     while ((ord = multiValueSet.nextOrd()) != SortedSetDocValues.NO_MORE_ORDS) {
       BytesRef bytes = multiValueSet.lookupOrd(ord);
       String documentGroupList = bytes.utf8ToString();
 
       if (accessGranted(documentGroupList)) {
-	return true;
+	    return true;
       }
     }
     return false;
@@ -169,14 +170,14 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
        */
 
       public void doSetNextReader(LeafReaderContext context) throws IOException {
-	DocValuesType type = context.reader().getFieldInfos().fieldInfo(accessField).getDocValuesType();
-	isMultivalue = type.equals(DocValuesType.SORTED_SET);
+        DocValuesType type = context.reader().getFieldInfos().fieldInfo(accessField).getDocValuesType();
+        isMultivalue = type.equals(DocValuesType.SORTED_SET);
 
-	if(isMultivalue) {
-	  aclsSet = context.reader().getSortedSetDocValues(accessField);
-	} else {
+        if (isMultivalue) {
+          aclsSet = context.reader().getSortedSetDocValues(accessField);
+        } else {
           acls = context.reader().getSortedDocValues(accessField);
-	}
+        }
         super.doSetNextReader(context);
       }
 
@@ -191,13 +192,13 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
 
       @Override
       public void collect(int doc) throws IOException {
-	if (isMultivalue && handleMultivalueAccessField(doc, aclsSet)) {
-	  super.collect(doc);
-	}
+        if (isMultivalue && handleMultivalueAccessField(doc, aclsSet)) {
+          super.collect(doc);
+        }
 
-        if (!isMultivalue && handleSingleValueAccessField(doc, acls)) { 
-	  super.collect(doc);
-	}
+        if (!isMultivalue && handleSingleValueAccessField(doc, acls)) {
+          super.collect(doc);
+        }
       }
     };
   }

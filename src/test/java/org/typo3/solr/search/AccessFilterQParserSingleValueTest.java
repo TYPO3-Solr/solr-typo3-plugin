@@ -36,6 +36,7 @@ public class AccessFilterQParserSingleValueTest extends SolrTestCaseJ4 {
 	public void before() throws Exception {
 		initCore("solrconfig.xml", "schema.xml");
 		createIndex();
+
 	}
 
 
