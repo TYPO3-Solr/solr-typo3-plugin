@@ -12,11 +12,6 @@
 
 	<abortOnConfigurationError>${solr.abortOnConfigurationError:true}</abortOnConfigurationError>
 	<indexConfig>
-		<!-- this sys property is not set by SolrTestCaseJ4 because we ideally want to use
-               the RandomMergePolicy in all tests - but some tests expect very specific
-               Merge behavior, so those tests can set it as needed.
-		-->
-		<mergePolicy class="${solr.tests.mergePolicy:org.apache.solr.util.RandomMergePolicy}" />
 
 		<useCompoundFile>${useCompoundFile:false}</useCompoundFile>
 
