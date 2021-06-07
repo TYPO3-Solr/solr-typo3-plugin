@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.typo3.solr</groupId>
     <artifactId>solr-typo3-plugin</artifactId>
-    <version>4.0.0</version>
+    <version>5.0.0</version>
     <packaging>jar</packaging>
     <name>Solr TYPO3 Plugin</name>
     <description>A plugin for Solr to implement TYPO3 support functionality.</description>
@@ -61,7 +61,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <solr.version>8.8.2</solr.version>
         <timestamp>${maven.build.timestamp}</timestamp>
-        <java.compat.version>8</java.compat.version>
+        <java.compat.version>11</java.compat.version>
     </properties>
     <build>
         <plugins>

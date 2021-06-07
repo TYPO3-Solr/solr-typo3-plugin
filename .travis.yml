@@ -4,7 +4,7 @@ sudo: false
 script: mvn clean verify
 
 jdk:
-  - openjdk8
+  - openjdk11
 
 cache:
   directories:
