@@ -81,7 +81,7 @@ public class AccessFilterQParserPluginTest extends RestTestBase {
             LinkedHashMap<String, String> pluginInfo = (LinkedHashMap<String, String>) objectInfo;
             String description = pluginInfo.get("description");
             String version = description.substring(description.indexOf("Version: ") + 9, description.indexOf(")"));
-            assertTrue(version.startsWith("4."));
+            assertTrue(version.startsWith("5."));
         } else {
             fail();
         }
