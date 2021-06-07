@@ -39,16 +39,13 @@
             </roles>
         </developer>
         <developer>
-            <id>dkd-schmidt</id>
-            <name>Timo Schmidt</name>
-            <email>timo-schmidt@gmx.net</email>
-            <organization>dkd Internet Service GmbH</organization>
-            <organizationUrl>http://www.dkd.de</organizationUrl>
+            <id>timohund</id>
+            <name>Timo Hund </name>
+            <email>timo.hund@yahoo.com</email>
             <roles>
                 <role>Developer</role>
             </roles>
         </developer>
-
     </developers>
 
     <contributors>
