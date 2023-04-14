@@ -27,7 +27,6 @@ import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.FixedBitSet;
 import org.apache.solr.schema.IndexSchema;
-import org.apache.solr.search.Filter;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
 import org.typo3.access.RootlineElementType;
@@ -100,6 +99,15 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
   }
 
   /**
+   * Recurse through the query tree, visiting any child queries
+   * @param visitor a QueryVisitor to be called by each query in the tree
+   */
+  @Override
+  public void visit(QueryVisitor visitor) {
+    visitor.visitLeaf(this);
+  }
+
+  /**
    * This method iterates over the documents and marks documents as accessable that are granted
    * and have the access information in a single value field.
    *
@@ -112,7 +120,7 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
   private boolean handleSingleValueAccessField(int doc, SortedDocValues values) throws IOException {
 
     values.advance(doc);
-    BytesRef bytes = values.binaryValue();
+    BytesRef bytes = values.lookupOrd(values.ordValue());
     String documentGroupList = bytes.utf8ToString();
 
     if (accessGranted(documentGroupList)) {
@@ -182,9 +190,9 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
       }
 
       /**
-       * Called for each document that need to be considered, if we do 
+       * Called for each document that need to be considered, if we do
        * not call super.collect, the document will effectively be filtered here.
-       * 
+       *
        *
        * @param doc
        * @throws IOException
