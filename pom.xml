@@ -56,7 +56,7 @@
     </organization>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <solr.version>9.2.0</solr.version>
+        <solr.version>9.3.0</solr.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <java.compat.version>11</java.compat.version>
     </properties>
