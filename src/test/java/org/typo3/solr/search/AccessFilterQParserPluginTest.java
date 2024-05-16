@@ -38,13 +38,9 @@ public class AccessFilterQParserPluginTest extends RestTestBase {
 
     public static final Logger log = LoggerFactory.getLogger(AccessFilterQParserPluginTest.class);
 
-    private static final String collection = "collection1";
-    private static final String confDir = collection + "/conf";
-
     @Before
     public void before() throws Exception {
         File tmpSolrHome = createTempDir().toFile();
-        File tmpConfDir = new File(tmpSolrHome, confDir);
         FileUtils.copyDirectory(new File(TEST_HOME()), tmpSolrHome.getAbsoluteFile());
 
         createJettyAndHarness(
@@ -59,11 +55,9 @@ public class AccessFilterQParserPluginTest extends RestTestBase {
 
     @After
     public void after() throws Exception {
-        if (jetty != null) {
-            jetty.stop();
-            jetty = null;
+        if (getJetty().isRunning()) {
+            getJetty().stop();
         }
-        client = null;
         if (restTestHarness != null) {
             restTestHarness.close();
         }

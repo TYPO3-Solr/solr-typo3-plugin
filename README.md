@@ -1,10 +1,10 @@
 
-[![Travis Build Status](https://travis-ci.org/TYPO3-Solr/solr-typo3-plugin.svg?branch=master)](https://travis-ci.org/TYPO3-Solr/solr-typo3-plugin/builds)
+![GitHub Build Status](https://github.com/TYPO3-Solr/solr-typo3-plugin/actions/workflows/ci.yml/badge.svg)
 
 # Solr TYPO3 Plugin
 
-The Solr TYPO3 plugin provides the AccessFilterQParserPlugin, which is a 
-org.apache.solr.search.QParserPlugin that allows to restrict access to Solr 
+The Solr TYPO3 plugin provides the AccessFilterQParserPlugin, which is a
+org.apache.solr.search.QParserPlugin that allows to restrict access to Solr
 documents indexed by TYPO3 on a document level.
 
 It filters the documents returned from a query by performing set operations
@@ -40,7 +40,7 @@ In your schema.xml add a field like this:
 <field name="access" type="string" indexed="false" stored="true" docValues="true" default="c:0" />
 ```
 
-It is important to turn on DocValues. The field does not need to be stored, 
+It is important to turn on DocValues. The field does not need to be stored,
 but it helps with debugging.
 
 
