@@ -47,19 +47,19 @@
 		<maxBooleanClauses>1024</maxBooleanClauses>
 
 		<filterCache
-			class="solr.FastLRUCache"
+			class="solr.CaffeineCache"
 			size="512"
 			initialSize="512"
-			autowarmCount="256"/>
+			autowarmCount="128"/>
 
 		<queryResultCache
-			class="solr.LRUCache"
+			class="solr.CaffeineCache"
 			size="512"
 			initialSize="512"
-			autowarmCount="0"/>
+			autowarmCount="128"/>
 
 		<documentCache
-			class="solr.LRUCache"
+			class="solr.CaffeineCache"
 			size="512"
 			initialSize="512"
 			autowarmCount="0"/>
@@ -89,11 +89,11 @@
 	</query>
 
 
-	<requestDispatcher handleSelect="true" >
-		<!--Make sure your system has some authentication!  -->
-		<requestParsers enableRemoteStreaming="true" multipartUploadLimitInKB="2048000" />
+	<requestDispatcher handleSelect="false" >
+		<requestParsers multipartUploadLimitInKB="2048000" />
 
 		<httpCaching lastModifiedFrom="openTime" etagSeed="Solr" />
+		<httpCaching never304="true"/>
 	</requestDispatcher>
 
 
