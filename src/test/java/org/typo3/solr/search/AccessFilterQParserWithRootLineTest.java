@@ -19,7 +19,6 @@ package org.typo3.solr.search;
 import org.apache.solr.SolrTestCaseJ4;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -34,6 +33,7 @@ public class AccessFilterQParserWithRootLineTest extends SolrTestCaseJ4 {
 
 	@Before
 	public void before() throws Exception {
+		System.setProperty("solr.directoryFactory", "solr.MockDirectoryFactory");
 		initCore("solrconfig.xml", "schema.xml");
 		createIndex();
 	}
