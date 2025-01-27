@@ -33,6 +33,7 @@ public class AccessFilterQParserMultiValueTest extends SolrTestCaseJ4 {
 
     @Before
     public void before() throws Exception {
+        System.setProperty("solr.directoryFactory", "solr.MockDirectoryFactory");
         initCore("solrconfig.xml", "schema.xml");
     }
 
