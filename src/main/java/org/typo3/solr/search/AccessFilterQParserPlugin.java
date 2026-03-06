@@ -17,14 +17,13 @@
 package org.typo3.solr.search;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Properties;
 
-import com.codahale.metrics.Metric;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
-import org.apache.solr.common.util.SimpleOrderedMap;
 import org.apache.solr.core.SolrInfoBean;
+import org.apache.solr.metrics.SolrMetricsContext;
+import io.opentelemetry.api.common.Attributes;
 import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.search.QParser;
 import org.apache.solr.search.QParserPlugin;
@@ -47,13 +46,14 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
    */
   private static String version = null;
 
+  private SolrMetricsContext solrMetricsContext;
+
   /**
    * Implementation of NamedListInitializedPlugin.init().
    *
    * @param args Arguments
-   * @see org.apache.solr.util.plugin.NamedListInitializedPlugin#init(org.apache.solr.common.util.NamedList)
    */
-  public void init(final NamedList args) {
+  public void init(final NamedList<?> args) {
     try {
 
       Properties p = new Properties();
@@ -70,11 +70,6 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
 
   /**
    * Implementation of QParserPlugin.createParser().
-   *
-   * @see org.apache.solr.search.QParserPlugin#createParser(java.lang.String,
-   * org.apache.solr.common.params.SolrParams,
-   * org.apache.solr.common.params.SolrParams,
-   * org.apache.solr.request.SolrQueryRequest)
    *
    * @param qstr Search term
    * @param localParams Local parameters
@@ -108,4 +103,13 @@ public class AccessFilterQParserPlugin extends QParserPlugin implements SolrInfo
     return SolrInfoBean.Category.OTHER;
   }
 
+  @Override
+  public SolrMetricsContext getSolrMetricsContext() {
+    return solrMetricsContext;
+  }
+
+  @Override
+  public void initializeMetrics(SolrMetricsContext parentContext, Attributes attributes) {
+    this.solrMetricsContext = parentContext.getChildContext(this);
+  }
 }

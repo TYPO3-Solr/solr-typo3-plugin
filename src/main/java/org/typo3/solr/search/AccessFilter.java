@@ -18,15 +18,10 @@ package org.typo3.solr.search;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Map;
 
 import org.apache.lucene.index.*;
 import org.apache.lucene.search.*;
-import org.apache.lucene.util.BitDocIdSet;
-import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.FixedBitSet;
-import org.apache.solr.schema.IndexSchema;
 import org.typo3.access.Rootline;
 import org.typo3.access.RootlineElement;
 import org.typo3.access.RootlineElementType;
@@ -140,15 +135,15 @@ public class AccessFilter extends ExtendedQueryBase implements PostFilter {
    * @return boolean TRUE if access is granted, otherwise FALSE
      */
   private boolean handleMultivalueAccessField(int doc, SortedSetDocValues multiValueSet) throws IOException {
-    long ord;
     multiValueSet.advance(doc);
 
-    while ((ord = multiValueSet.nextOrd()) != SortedSetDocValues.NO_MORE_ORDS) {
+    for (int i = 0; i < multiValueSet.docValueCount(); i++) {
+      long ord = multiValueSet.nextOrd();
       BytesRef bytes = multiValueSet.lookupOrd(ord);
       String documentGroupList = bytes.utf8ToString();
 
       if (accessGranted(documentGroupList)) {
-	    return true;
+        return true;
       }
     }
     return false;
