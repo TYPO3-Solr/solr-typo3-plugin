@@ -41,10 +41,10 @@ public class AccessFilterQParserPluginTest extends RestTestBase {
     @Before
     public void before() throws Exception {
         File tmpSolrHome = createTempDir().toFile();
-        FileUtils.copyDirectory(new File(TEST_HOME()), tmpSolrHome.getAbsoluteFile());
+        FileUtils.copyDirectory(TEST_HOME().toFile(), tmpSolrHome.getAbsoluteFile());
 
         createJettyAndHarness(
-            tmpSolrHome.getAbsolutePath(),
+            tmpSolrHome.getAbsoluteFile().toPath(),
             "solrconfig.xml",
             "schema.xml",
             "/solr",

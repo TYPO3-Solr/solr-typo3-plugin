@@ -60,7 +60,7 @@ public final class StringUtils {
    * @param glue Glue / separator string.
    * @return String collection elements concatenated with glue.
    */
-  public static String implode(final Collection collection, final String glue) {
+  public static String implode(final Collection<?> collection, final String glue) {
     return org.apache.commons.lang3.StringUtils.join(collection, glue);
   }
 
