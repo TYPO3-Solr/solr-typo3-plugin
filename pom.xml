@@ -59,6 +59,7 @@
         <solr.version>10.0.0</solr.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <java.compat.version>21</java.compat.version>
+        <jackson.version>2.19.4</jackson.version>
     </properties>
     <build>
         <plugins>
@@ -210,6 +211,147 @@
             <artifactId>junit-jupiter</artifactId>
             <version>5.11.4</version>
             <scope>test</scope>
+        </dependency>
+
+
+		<!--  Fix missing version declarations in POM for solr-core:10.0.0 -->
+         <dependency>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-solrj</artifactId>
+          <version>${solr.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-api</artifactId>
+          <version>${solr.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-core</artifactId>
+          <version>10.3.2</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-queries</artifactId>
+          <version>10.3.2</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-analysis-common</artifactId>
+          <version>10.3.2</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+          <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-core</artifactId>
+          <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-annotations</artifactId>
+          <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-smile</artifactId>
+          <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-cbor</artifactId>
+          <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-api</artifactId>
+          <version>1.56.0</version>
+        </dependency>
+        <dependency>
+          <groupId>io.opentelemetry</groupId>
+          <artifactId>opentelemetry-common</artifactId>
+          <version>1.56.0</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-solrj-streaming</artifactId>
+          <version>${solr.version}</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-highlighter</artifactId>
+          <version>10.3.2</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-exec</artifactId>
+          <version>1.4.0</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-misc</artifactId>
+          <version>10.3.2</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-join</artifactId>
+          <version>10.3.2</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.lucene</groupId>
+          <artifactId>lucene-queryparser</artifactId>
+          <version>10.3.2</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.carrotsearch</groupId>
+          <artifactId>hppc</artifactId>
+          <version>0.10.0</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.github.ben-manes.caffeine</groupId>
+          <artifactId>caffeine</artifactId>
+          <version>3.1.8</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jersey.core</groupId>
+          <artifactId>jersey-server</artifactId>
+          <version>3.1.10</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jersey.containers</groupId>
+          <artifactId>jersey-container-servlet-core</artifactId>
+          <version>3.1.10</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jersey.inject</groupId>
+          <artifactId>jersey-hk2</artifactId>
+          <version>3.1.10</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.glassfish.jersey.media</groupId>
+          <artifactId>jersey-media-json-jackson</artifactId>
+          <version>3.1.10</version>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>2.20.0</version>
+          <scope>test</scope>
         </dependency>
     </dependencies>
     <repositories>
