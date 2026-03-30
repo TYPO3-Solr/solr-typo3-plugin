@@ -17,6 +17,7 @@
 package org.typo3.solr.search;
 
 
+import java.io.IOException;
 import java.io.File;
 import java.io.StringReader;
 import java.util.*;
@@ -67,26 +68,44 @@ public class AccessFilterQParserPluginTest extends RestTestBase {
     @Test
     public void testPluginListsVersion() throws Exception {
         RestTestHarness harness = restTestHarness;
-        Map plugins = getResponseMap("/admin/plugins?wt=json", harness);
-        Object objectInfo = getObjectByPath(plugins, false, Arrays.asList("plugins", "OTHER", "org.typo3.solr.search.AccessFilterQParserPlugin"));
 
-        if (objectInfo instanceof LinkedHashMap) {
-            @SuppressWarnings("unchecked")
-            LinkedHashMap<String, String> pluginInfo = (LinkedHashMap<String, String>) objectInfo;
-            String description = pluginInfo.get("description");
-            String version = description.substring(description.indexOf("Version: ") + 9, description.indexOf(")"));
-            assertTrue(version.startsWith("6."));
-        } else {
-            fail();
-        }
+        String response = harness.query("/config?wt=json");
+        assertNotNull("Config response should not be null", response);
+
+        Map<String, Object> responseMap = getResponseMap(response);
+        Object config = getObjectByPath(responseMap, false,
+            Arrays.asList("config", "queryParser", "typo3access"));
+
+        assertNotNull(
+            "typo3access queryParser should be registered in Solr config",
+            config
+        );
+
+        assertTrue(
+            "typo3access config should be a map",
+            config instanceof LinkedHashMap
+        );
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> parserConfig = (Map<String, Object>) config;
+
+        assertEquals(
+            "typo3access queryParser should use AccessFilterQParserPlugin",
+            "org.typo3.solr.search.AccessFilterQParserPlugin",
+            parserConfig.get("class")
+        );
+
+        assertEquals(
+            "typo3access queryParser should have correct name",
+            "typo3access",
+            parserConfig.get("name")
+        );
     }
 
-    public static Map getResponseMap(String path, RestTestHarness restHarness) throws Exception {
-        String response = restHarness.query(path);
+    private Map<String, Object> getResponseMap(String response) {
         try {
             return (Map) ObjectBuilder.getVal(new JSONParser(new StringReader(response)));
-        } catch (JSONParser.ParseException e) {
-            log.error(response);
+        } catch (IOException e) {
             return Collections.emptyMap();
         }
     }
