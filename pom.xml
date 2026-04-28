@@ -284,7 +284,7 @@
         <dependency>
           <groupId>org.apache.lucene</groupId>
           <artifactId>lucene-highlighter</artifactId>
-          <version>10.3.2</version>
+          <version>10.4.0</version>
           <scope>test</scope>
         </dependency>
         <dependency>
