@@ -164,6 +164,25 @@
             </plugin>
         </plugins>
     </reporting>
+    <dependencyManagement>
+        <dependencies>
+            <!--
+              Import the Jackson BOM so the whole Jackson family (core, databind,
+              annotations, dataformat-smile, dataformat-cbor) is versioned coherently.
+              Individual modules are released independently: bumping a single shared
+              version property to a databind patch release (e.g. 2.21.x) breaks the
+              build because jackson-annotations has no matching release. The BOM keeps
+              them in lockstep and lets Dependabot bump them as one coherent unit.
+            -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -240,30 +259,26 @@
           <artifactId>lucene-analysis-common</artifactId>
           <version>10.3.2</version>
         </dependency>
+        <!-- Versions are managed by the imported jackson-bom (see dependencyManagement) -->
         <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-databind</artifactId>
-          <version>${jackson.version}</version>
         </dependency>
         <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-core</artifactId>
-          <version>${jackson.version}</version>
         </dependency>
         <dependency>
           <groupId>com.fasterxml.jackson.core</groupId>
           <artifactId>jackson-annotations</artifactId>
-          <version>${jackson.version}</version>
         </dependency>
         <dependency>
           <groupId>com.fasterxml.jackson.dataformat</groupId>
           <artifactId>jackson-dataformat-smile</artifactId>
-          <version>${jackson.version}</version>
         </dependency>
         <dependency>
           <groupId>com.fasterxml.jackson.dataformat</groupId>
           <artifactId>jackson-dataformat-cbor</artifactId>
-          <version>${jackson.version}</version>
         </dependency>
         <dependency>
           <groupId>io.opentelemetry</groupId>
