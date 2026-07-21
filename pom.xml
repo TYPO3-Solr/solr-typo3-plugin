@@ -59,7 +59,7 @@
         <solr.version>10.0.0</solr.version>
         <timestamp>${maven.build.timestamp}</timestamp>
         <java.compat.version>21</java.compat.version>
-        <jackson.version>2.19.4</jackson.version>
+        <jackson.version>2.21.1</jackson.version>
     </properties>
     <build>
         <plugins>
