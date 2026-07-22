@@ -293,7 +293,7 @@
         <dependency>
           <groupId>io.opentelemetry</groupId>
           <artifactId>opentelemetry-common</artifactId>
-          <version>1.56.0</version>
+          <version>1.64.0</version>
         </dependency>
         <dependency>
           <groupId>org.apache.solr</groupId>
