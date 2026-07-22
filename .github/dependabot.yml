@@ -7,6 +7,10 @@ updates:
     open-pull-requests-limit: 5
     allow:
       - dependency-type: "direct"
+    groups:
+      jackson:
+        patterns:
+          - "com.fasterxml.jackson*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
